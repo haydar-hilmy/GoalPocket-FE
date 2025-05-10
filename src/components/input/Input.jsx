@@ -1,5 +1,6 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import PasswordStrengthBar from "../barLevel/passwordStrengthBar";
 
 const StyleFieldInput =
   "w-full py-3 placeholder:text-[0.9rem] bg-transparent focus:outline-none";
@@ -19,14 +20,22 @@ const FieldInput = ({ children, variant, isError = false }) => {
 };
 
 const PasswordInput = ({
+  isLevelBar = true,
   name = "Kata Sandi",
   minLen = 1,
   errorMsg = "",
   placeholder = "********",
   text = "Kata Sandi",
+  hook_form,
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
+
+  const [password, setPassword] = useState("");
+
+  const handleChange = (e) => {
+    setPassword(e.target.value);
+  };
 
   return (
     <>
@@ -36,6 +45,7 @@ const PasswordInput = ({
         </label>
         <FieldInput isError={errorMsg != "" ? true : false}>
           <input
+            {...hook_form}
             autoComplete={name}
             minLength={minLen}
             className={`${StyleFieldInput} pl-5`}
@@ -43,6 +53,7 @@ const PasswordInput = ({
             id={name}
             name={name}
             type={visible ? "text" : "password"}
+            onChange={handleChange}
           />
           <span
             onClick={toggleVisibility}
@@ -51,7 +62,10 @@ const PasswordInput = ({
             {visible ? <Visibility /> : <VisibilityOff />}
           </span>
         </FieldInput>
-        <small className="text-red-500 text-[0.9rem] ml-[20px]">
+
+        {isLevelBar ? <PasswordStrengthBar password={password} /> : ""}
+
+        <small className="text-red-500 text-[0.8rem] ml-[20px]">
           {errorMsg}
         </small>
       </div>
@@ -66,6 +80,9 @@ const MainInput = ({
   placeholder = "",
   text = "Input",
   autofocus = false,
+  hook_form,
+  oninput,
+  onchange,
 }) => {
   return (
     <>
@@ -75,6 +92,7 @@ const MainInput = ({
         </label>
         <FieldInput isError={errorMsg != "" ? true : false}>
           <input
+            {...hook_form}
             autoFocus={autofocus}
             type="text"
             minLength={minLen}
@@ -83,9 +101,12 @@ const MainInput = ({
             placeholder={placeholder}
             id={name}
             name={name}
+            onChange={onchange}
+            onInput={oninput}
           />
         </FieldInput>
-        <small className="text-red-500 text-[0.9rem] ml-[20px]">
+
+        <small className="text-red-500 text-[0.8rem] ml-[20px]">
           {errorMsg}
         </small>
       </div>

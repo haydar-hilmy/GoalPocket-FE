@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Toggle = ({ name }) => {
+const Toggle = ({ name, hook_form }) => {
   return (
     <StyledWrapper>
       <label className="switch">
-        <input name={name} id={name} type="checkbox" />
+        <input {...hook_form} name={name} id={name} type="checkbox" />
         <span className="slider" />
       </label>
     </StyledWrapper>
