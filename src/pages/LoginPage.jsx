@@ -2,14 +2,15 @@ import { Link } from "react-router";
 import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
+import { Button } from "../components/button/Button";
 
 const LoginPage = () => {
   return (
     <AuthLayout type="signin">
-      <div>
-        <h1 className="w-full font-bold text-center text-[1.6rem]">Masuk</h1>
-        <h4 className="font-normal text-[#475467] text-[0.9rem]">
-          Anda dapat masuk dengan menggunakan email.
+      <div className="flex flex-col gap-2">
+        <h1 className="w-full font-bold text-center text-[1.6rem] leading-[100%]">Masuk</h1>
+        <h4 className="font-normal text-[#475467] text-[0.9rem] text-center">
+          Anda dapat masuk dengan menggunakan email terdaftar.
         </h4>
       </div>
 
@@ -32,10 +33,15 @@ const LoginPage = () => {
                 <Toggle />
                 <small className="text-[0.9rem]" style={{ lineHeight: "100%" }}>Ingat Saya</small>
             </div>
-            <Link className="hover:text-primary duration-100" to={"/forgot"}>Lupa Password?</Link>
+            <Link className="hover:text-primary text-[0.9rem]" to={"/forgot"}>Lupa Password?</Link>
         </div>
 
-        <button className="bg-primary text-white rounded-full py-3">Masuk</button>
+        <Button 
+        type="submit"
+        text="Masuk"
+        isLoading={false}
+        />
+        <span className="text-[0.9rem] text-center">Belum punya akun? <Link className="text-primary hover:text-blue-300" to={"/register"}>Daftar sekarang</Link></span>
       </form>
     </AuthLayout>
   );

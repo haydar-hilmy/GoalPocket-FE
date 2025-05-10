@@ -10,6 +10,10 @@ function App() {
       path: "/",
       element: <LoginPage />,
     },
+    {
+      path: "/register",
+      element: "Halo"
+    }
   ]);
 
   return (
