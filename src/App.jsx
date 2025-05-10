@@ -3,16 +3,21 @@ import LoginPage from "./pages/LoginPage";
 import { RouterProvider } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import './styles/main.css'
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const myRouter = createBrowserRouter([
     {
-      path: "/",
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/", // sementara
       element: <LoginPage />,
     },
     {
       path: "/register",
-      element: "Halo"
+      element: <RegisterPage />
     }
   ]);
 
