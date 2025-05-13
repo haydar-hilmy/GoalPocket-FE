@@ -5,4 +5,5 @@
 - git clone `<thisRepoLink>`
 - cd `<projectName>`
 - install dependecies `npm install --legacy-peer-deps`
+- rename `env` file to `.env`
 - run app `npm run dev`

@@ -4,6 +4,9 @@ import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Close } from "@mui/icons-material";
+import { MiniAlertBox } from "../components/alertBox/alertBox";
 
 const LoginPage = () => {
   const {
@@ -14,8 +17,63 @@ const LoginPage = () => {
     mode: "onSubmit",
   });
 
-  const onFormSubmit = (data) => {
-    alert(`email: ${data.email}\npassword: ${data.password}\nisRemember: ${data.remember}`);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [miniAlertBox, setMiniAlertBox] = useState({ isVisible: false, text: "", type: "info" });
+
+  const onFormSubmit = async (data) => {
+    console.log(
+      `email: ${data.email}\npassword: ${data.password}\nisRemember: ${data.remember}`
+    );
+
+    try {
+  setBtnLoading(true);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout jika server tidak merespon
+
+  const response = await fetch(
+    `${import.meta.env.VITE_ENDPOINT_URL}/login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+      signal: controller.signal,
+    }
+  );
+
+  clearTimeout(timeoutId);
+
+  const result = await response.json();
+
+  if (!response.ok || result.error) {
+    throw new Error(result.message || "Login failed");
+  }
+
+  console.log("Login successful:", result.loginResult);
+} catch (error) {
+  let message = "Terjadi kesalahan saat login.";
+  if (error.name === "AbortError") {
+    message = "Server tidak merespon. Coba lagi nanti.";
+  } else if (error.message.includes("Email") || error.message.includes("password")) {
+    message = "Email atau password yang dimasukkan salah.";
+  }
+
+  setMiniAlertBox({
+    text: message,
+    isVisible: true,
+    type: "danger",
+  });
+
+  console.error("Login error:", error.message);
+} finally {
+  setBtnLoading(false);
+}
+
   };
 
   return (
@@ -55,15 +113,12 @@ const LoginPage = () => {
           text="Kata Sandi"
           hook_form={register("password", {
             required: "Kata sandi wajib diisi.",
-            pattern: {
-              value: /^.{8,}$/,
-              message: "Kata sandi minimal terdiri dari 8 karakter",
-            },
           })}
         />
+
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-3">
-            <Toggle hook_form={register('remember')} name="remember" />
+            <Toggle hook_form={register("remember")} name="remember" />
             <small className="text-[0.9rem]" style={{ lineHeight: "100%" }}>
               Ingat Saya
             </small>
@@ -73,7 +128,20 @@ const LoginPage = () => {
           </Link>
         </div>
 
-        <Button type="submit" text="Masuk" isLoading={false} />
+
+        <MiniAlertBox
+        isVisible={miniAlertBox.isVisible}
+        text={miniAlertBox.text}
+        type={miniAlertBox.type}
+        onClose={(prev) => setMiniAlertBox({ ...prev, isVisible: false})}
+        />
+
+        <Button
+          type="submit"
+          text="Masuk"
+          isLoading={btnLoading}
+          isDisabled={btnLoading}
+        />
         <span className="text-[0.9rem] text-center">
           Belum punya akun?{" "}
           <Link className="text-primary hover:text-blue-300" to={"/register"}>
