@@ -7,6 +7,7 @@ import RegisterPage from "./pages/RegisterPage";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import RecoveryPage from "./pages/RecoveryPage";
+import DashboardPage from "./pages/App/DashboardPage";
 
 function App() {
 
@@ -31,7 +32,7 @@ function App() {
     },
     {
       path: "/",
-      element: <RequireAuth><h1>Halaman Utama</h1></RequireAuth>,
+      element: <DashboardPage />,
     },
   ]);
 
