@@ -6,6 +6,7 @@ import './styles/main.css'
 import RegisterPage from "./pages/RegisterPage";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
+import RecoveryPage from "./pages/RecoveryPage";
 
 function App() {
 
@@ -23,6 +24,10 @@ function App() {
     {
       path: "/register",
       element: <RegisterPage />
+    },
+    {
+      path: "/forgot",
+      element: <RecoveryPage />
     },
     {
       path: "/",

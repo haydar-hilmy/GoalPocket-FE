@@ -12,7 +12,7 @@ const RegisterPage = () => {
     watch,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onBlur",
+    mode: "onSubmit",
   });
 
   const password = watch("password");

@@ -11,7 +11,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onBlur",
+    mode: "onSubmit",
   });
 
   const onFormSubmit = (data) => {
