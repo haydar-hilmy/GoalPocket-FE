@@ -4,10 +4,6 @@ import Logo from "../components/logo/Logo";
 const AuthLayout = ({ children, type = "GoalPocket Auth" }) => {
   return (
     <div
-      style={{
-        background:
-          "repeating-linear-gradient(-45deg, #e1e1e1, #e1e1e1 1px, #f5f5f5 1px, #f5f5f5 8px)",
-      }}
       className="flex justify-center items-center min-h-screen flex-col"
     >
       <Helmet>

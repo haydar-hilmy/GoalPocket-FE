@@ -24,7 +24,9 @@ export default {
           fontFamily: theme("fontFamily.body"),
           scrollBehavior: "smooth",
           backgroundColor: theme("colors.bg_base"),
-          color: theme("colors.text_dark")
+          color: theme("colors.text_dark"),
+          backgroundImage:
+          "repeating-linear-gradient(-45deg, #e1e1e1, #e1e1e1 1px, #f5f5f5 1px, #f5f5f5 8px)",
         },
         html: {
           scrollBehavior: "smooth",
