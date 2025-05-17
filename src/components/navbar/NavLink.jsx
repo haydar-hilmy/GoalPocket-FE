@@ -2,7 +2,7 @@ import { href, Link } from "react-router"
 
 export const NavLink = ({ children, hrefTo }) => {
     return <Link className="
-    text-[#8E919F]
+    text-[#494a50]
     p-2.5
     duration-100
     rounded-lg

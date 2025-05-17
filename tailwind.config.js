@@ -10,7 +10,7 @@ export default {
         body: ["Poppins"],
       },
       colors: {
-        bg_base: "#F1F1FB",
+        bg_base: "#F6F6FD",
         text_dark: "#1F2B3A",
         primary: "#0087FF",
         warning: "#FF0004"
@@ -26,7 +26,7 @@ export default {
           backgroundColor: theme("colors.bg_base"),
           color: theme("colors.text_dark"),
           backgroundImage:
-          "repeating-linear-gradient(-45deg, #e1e1e1, #e1e1e1 1px, #f5f5f5 1px, #f5f5f5 8px)",
+          "repeating-linear-gradient(-45deg, #DEDEE7, #e1e1e1 1px, #F1F1FB 1px, #F1F1FB 8px)",
         },
         html: {
           scrollBehavior: "smooth",
