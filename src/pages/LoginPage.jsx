@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Close } from "@mui/icons-material";
 import { MiniAlertBox } from "../components/alertBox/alertBox";
+import { AuthContext } from "../context/AuthContext";
+import { CONFIG } from "../config/Config";
 
 const LoginPage = () => {
   const {
@@ -17,14 +19,14 @@ const LoginPage = () => {
     mode: "onSubmit",
   });
 
+  const navigate = useNavigate()
+
+  const { setIsLoggedIn } = useContext(AuthContext);
+
   const [btnLoading, setBtnLoading] = useState(false);
   const [miniAlertBox, setMiniAlertBox] = useState({ isVisible: false, text: "", type: "info" });
 
   const onFormSubmit = async (data) => {
-    console.log(
-      `email: ${data.email}\npassword: ${data.password}\nisRemember: ${data.remember}`
-    );
-
     try {
   setBtnLoading(true);
 
@@ -54,7 +56,9 @@ const LoginPage = () => {
     throw new Error(result.message || "Login failed");
   }
 
-  console.log("Login successful:", result.loginResult);
+  setIsLoggedIn(true);
+  localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
+  navigate("/")
 } catch (error) {
   let message = "Terjadi kesalahan saat login.";
   if (error.name === "AbortError") {

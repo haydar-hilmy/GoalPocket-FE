@@ -1,10 +1,12 @@
+import { capitalize } from "../../utils/Capitalize";
+
 export const HeaderApp = ({ username = "User", pageName = "Dashboard" }) => {
   return (
     <>
       <header className="flex flex-row justify-between py-5 items-center">
         {/* Left Side */}
         <div className="flex flex-row">
-          <h2 className="font-bold">{pageName}</h2>
+          <h2 className="font-bold">{capitalize(pageName)}</h2>
         </div>
 
         {/* Right Side */}

@@ -2,37 +2,40 @@ import { createBrowserRouter } from "react-router";
 import LoginPage from "./pages/LoginPage";
 import { RouterProvider, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import './styles/main.css'
+import "./styles/main.css";
 import RegisterPage from "./pages/RegisterPage";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import RecoveryPage from "./pages/RecoveryPage";
 import DashboardPage from "./pages/App/DashboardPage";
+import RequireAuth from "./utils/auth/RequireAuth";
+import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
 
 function App() {
-
-  const { isLoggedIn } = useContext(AuthContext)
-
-  const RequireAuth = ({ children }) => {
-    return isLoggedIn ? children : <Navigate to="/login" />
-  }
-
   const myRouter = createBrowserRouter([
     {
       path: "/login",
-      element: <LoginPage />,
+      element: (
+        <RedirectIfLoggedIn>
+          <LoginPage />
+        </RedirectIfLoggedIn>
+      ),
     },
     {
       path: "/register",
-      element: <RegisterPage />
+      element: <RegisterPage />,
     },
     {
       path: "/forgot",
-      element: <RecoveryPage />
+      element: <RecoveryPage />,
     },
     {
       path: "/",
-      element: <DashboardPage />,
+      element: (
+        <RequireAuth>
+          <DashboardPage />
+        </RequireAuth>
+      ),
     },
   ]);
 
