@@ -1,4 +1,4 @@
-function getPasswordStrength(password) {
+function getPasswordStrength(password) { // rename
   const lengthRule = password.length >= 8;
   const hasLower = /[a-z]/.test(password);
   const hasUpper = /[A-Z]/.test(password);
