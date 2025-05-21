@@ -1,4 +1,4 @@
-import { getPasswordStrengthLevel } from "../../utils/passwordStrength";
+import { getPasswordStrengthLevel } from "../../utils/PasswordStrength";
 
 const PasswordStrengthBar = ({ password }) => {
   const { level, score } = getPasswordStrengthLevel(password);
