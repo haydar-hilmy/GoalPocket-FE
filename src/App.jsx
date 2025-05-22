@@ -8,6 +8,7 @@ import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import RecoveryPage from "./pages/RecoveryPage";
 import DashboardPage from "./pages/App/DashboardPage";
+import AddTransactionPage from "./pages/App/AddTransactionPage";
 import RequireAuth from "./utils/auth/RequireAuth";
 import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
 
@@ -19,15 +20,15 @@ function App() {
         <RedirectIfLoggedIn>
           <LoginPage />
         </RedirectIfLoggedIn>
-      ),
+      )
     },
     {
       path: "/register",
-      element: <RegisterPage />,
+      element: <RegisterPage />
     },
     {
       path: "/forgot",
-      element: <RecoveryPage />,
+      element: <RecoveryPage />
     },
     {
       path: "/",
@@ -35,8 +36,16 @@ function App() {
         <RequireAuth>
           <DashboardPage />
         </RequireAuth>
-      ),
+      )
     },
+    {
+      path: "/add",
+      element: (
+        <RequireAuth>
+          <AddTransactionPage />
+        </RequireAuth>
+      )
+    }
   ]);
 
   return (
