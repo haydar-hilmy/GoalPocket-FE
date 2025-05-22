@@ -11,6 +11,8 @@ const DashboardPage = () => {
                 <InOutComeBox title="Total Pemasukan" number="Rp 500.000" />
                 <InOutComeBox title="Total Pengeluaran" number="Rp 500.000" />
             </div>
+
+            
         </AppLayout>
     )
 }
