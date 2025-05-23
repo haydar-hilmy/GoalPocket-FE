@@ -66,7 +66,7 @@ const Navbar = ({ page = "home", user }) => {
             <NavLink text="Key">
               <Icon.Key />
             </NavLink>
-            <NavLink text="Profile" isActive={page == "profile"}>
+            <NavLink text="Profile" hrefTo={"/profile"} isActive={page == "profile"}>
               <Icon.UserCircle />
             </NavLink>
             <NavLink text="Log out" hrefTo={"/logout"}>

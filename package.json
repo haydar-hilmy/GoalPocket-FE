@@ -17,6 +17,7 @@
     "@mui/material": "^7.1.0",
     "@mui/x-charts": "^8.4.0",
     "@tailwindcss/vite": "^4.1.5",
+    "i18n-iso-countries": "^7.14.0",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
