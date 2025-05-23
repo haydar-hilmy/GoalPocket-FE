@@ -1,6 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import PasswordStrengthBar from "../barLevel/passwordStrengthBar";
+import { Button } from "../button/Button";
 
 const StyleFieldInput =
   "w-full py-3 placeholder:text-[0.9rem] bg-transparent focus:outline-none";
@@ -26,7 +27,7 @@ const PasswordInput = ({
   errorMsg = "",
   placeholder = "********",
   text = "Kata Sandi",
-  hook_form,
+  hook_form
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
@@ -82,7 +83,7 @@ const MainInput = ({
   autofocus = false,
   hook_form,
   oninput,
-  onchange,
+  onchange
 }) => {
   return (
     <>
@@ -114,4 +115,54 @@ const MainInput = ({
   );
 };
 
-export { MainInput, PasswordInput };
+const InOutComeInput = ({ title, categories = [], onSubmit }) => {
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const handlerSubmit = (e) => {
+    e.preventDefault();
+    if (category && amount) {
+      onSubmit({ category, amount });
+      setCategory("");
+      setAmount("");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handlerSubmit}
+      className="bg-bg_base rounded-xl shadow-md p-6 mb-6 w-full"
+    >
+      <h2 className="font-semibold text-lg border-b pb-2 mb-4">{title}</h2>
+      <div className="flex flex-col lg:flex-row gap-4">
+        <select
+          className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+        >
+          <option value="">Pilih Salah Satu</option>
+          {categories.map((cat, idx) => (
+            <option key={idx} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+          placeholder="Rp _____"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          required
+        />
+        <div className="w-full sm:w-auto">
+          <Button text="Kirim" type="Submit" variant="px-6 w-full" />
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export { MainInput, PasswordInput, InOutComeInput };
