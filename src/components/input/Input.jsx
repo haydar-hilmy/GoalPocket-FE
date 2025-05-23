@@ -115,7 +115,7 @@ const MainInput = ({
   );
 };
 
-const InOutComeInput = ({ title, categories = [], onSubmit }) => {
+const InOutComeInput = ({ title, categories = [], onSubmit, hook_form }) => {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -155,7 +155,9 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
           placeholder="Rp _____"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          min={0}
           required
+          {...hook_form}
         />
         <div className="w-full sm:w-auto">
           <Button text="Kirim" type="Submit" variant="px-6 w-full" />

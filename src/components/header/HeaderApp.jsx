@@ -11,11 +11,11 @@ export const HeaderApp = ({ username = "User", pageName = "Dashboard" }) => {
         </div>
 
         {/* Right Side */}
-        <div className="flex flex-row">
-          <div className="flex flex-row gap-3 items-center cursor-pointer">
+        <div className="hidden sm:flex flex-row">
+          <Link to={"/profile"} className="flex flex-row gap-3 items-center cursor-pointer">
             <img src="user/default-user.png" className="w-7" />
-            <Link to={"/profile"} className="font-bold text-base">{username}</Link>
-          </div>
+            <small to={"/profile"} className="font-bold text-base">{username}</small>
+          </Link>
         </div>
       </header>
     </>
