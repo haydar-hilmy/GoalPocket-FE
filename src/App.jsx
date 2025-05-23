@@ -15,43 +15,40 @@ import { LogoutPage } from "./pages/LogoutPage";
 
 function App() {
   const myRouter = createBrowserRouter([
-    {
-      path: "/login",
-      element: (
-        <RedirectIfLoggedIn>
-          <LoginPage />
-        </RedirectIfLoggedIn>
-      )
-    },
-    {
-      path: "/register",
-      element: <RegisterPage />
-    },
-    {
-      path: "/forgot",
-      element: <RecoveryPage />
-    },
-    {
-      path: "/",
-      element: (
-        <RequireAuth>
-          <DashboardPage />
-        </RequireAuth>
-      )
-    },
-    {
-      path: "/add",
-      element: (
-        <RequireAuth>
-          <AddTransactionPage />
-        </RequireAuth>
-      )
-    },
-    {
-      path: "/logout",
-      element: <LogoutPage />
-    },
-  ]);
+  {
+    path: "/login",
+    element: (
+      <RedirectIfLoggedIn>
+        <LoginPage />
+      </RedirectIfLoggedIn>
+    ),
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "/forgot",
+    element: <RecoveryPage />,
+  },
+  {
+    path: "/logout",
+    element: <LogoutPage />,
+  },
+  {
+    element: <RequireAuth />,
+    children: [
+      {
+        path: "/",
+        element: <DashboardPage />,
+      },
+      {
+        path: "/add",
+        element: <AddTransactionPage />,
+      },
+    ],
+  },
+]);
 
   return (
     <>

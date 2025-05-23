@@ -115,16 +115,29 @@ const MainInput = ({
   );
 };
 
-const InOutComeInput = ({ title, categories = [], onSubmit, hook_form }) => {
+const InOutComeInput = ({ title, categories = [], onSubmit }) => {
   const [category, setCategory] = useState("");
+  const [displayAmount, setDisplayAmount] = useState("");
   const [amount, setAmount] = useState("");
+
+  const formatCurrency = (value) => {
+    if (!value) return "";
+    return "Rp " + parseInt(value).toLocaleString("id-ID");
+  };
+
+  const handleAmountChange = (e) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
+    setDisplayAmount(formatCurrency(rawValue));
+    setAmount(rawValue);
+  };
 
   const handlerSubmit = (e) => {
     e.preventDefault();
     if (category && amount) {
-      onSubmit({ category, amount });
+      onSubmit({ category, amount: Number(amount) });
       setCategory("");
       setAmount("");
+      setDisplayAmount("");
     }
   };
 
@@ -150,15 +163,14 @@ const InOutComeInput = ({ title, categories = [], onSubmit, hook_form }) => {
         </select>
 
         <input
-          type="number"
+          type="text"
           className="border border-gray-300 rounded-lg px-4 py-2 w-full"
           placeholder="Rp _____"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          min={0}
+          value={displayAmount}
+          onChange={handleAmountChange}
           required
-          {...hook_form}
         />
+
         <div className="w-full sm:w-auto">
           <Button text="Kirim" type="Submit" variant="px-6 w-full" />
         </div>
