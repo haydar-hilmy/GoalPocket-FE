@@ -1,4 +1,5 @@
 import { InOutComeBox } from "../../components/box/InOutComeBox";
+import BarChartBox from "../../components/charts/BarChartBox";
 import AppLayout from "../../layouts/AppLayout"
 
 const DashboardPage = () => {

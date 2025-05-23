@@ -19,65 +19,71 @@ const LoginPage = () => {
     mode: "onSubmit",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { setIsLoggedIn } = useContext(AuthContext);
 
   const [btnLoading, setBtnLoading] = useState(false);
-  const [miniAlertBox, setMiniAlertBox] = useState({ isVisible: false, text: "", type: "info" });
+  const [miniAlertBox, setMiniAlertBox] = useState({
+    isVisible: false,
+    text: "",
+    type: "info",
+  });
 
   const onFormSubmit = async (data) => {
     try {
-  setBtnLoading(true);
+      setBtnLoading(true);
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout jika server tidak merespon
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout jika server tidak merespon
 
-  const response = await fetch(
-    `${import.meta.env.VITE_ENDPOINT_URL}/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-      signal: controller.signal,
+      const response = await fetch(
+        `${import.meta.env.VITE_ENDPOINT_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Login failed");
+      }
+
+      setIsLoggedIn(true);
+      localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
+      navigate("/");
+    } catch (error) {
+      let message = "Terjadi kesalahan saat login.";
+      if (error.name === "AbortError") {
+        message = "Server tidak merespon. Coba lagi nanti.";
+      } else if (
+        error.message.includes("Email") ||
+        error.message.includes("password")
+      ) {
+        message = "Email atau password yang dimasukkan salah.";
+      }
+
+      setMiniAlertBox({
+        text: message,
+        isVisible: true,
+        type: "danger",
+      });
+
+      console.error("Login error:", error.message);
+    } finally {
+      setBtnLoading(false);
     }
-  );
-
-  clearTimeout(timeoutId);
-
-  const result = await response.json();
-
-  if (!response.ok || result.error) {
-    throw new Error(result.message || "Login failed");
-  }
-
-  setIsLoggedIn(true);
-  localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
-  navigate("/")
-} catch (error) {
-  let message = "Terjadi kesalahan saat login.";
-  if (error.name === "AbortError") {
-    message = "Server tidak merespon. Coba lagi nanti.";
-  } else if (error.message.includes("Email") || error.message.includes("password")) {
-    message = "Email atau password yang dimasukkan salah.";
-  }
-
-  setMiniAlertBox({
-    text: message,
-    isVisible: true,
-    type: "danger",
-  });
-
-  console.error("Login error:", error.message);
-} finally {
-  setBtnLoading(false);
-}
-
   };
 
   return (
@@ -132,12 +138,11 @@ const LoginPage = () => {
           </Link>
         </div>
 
-
         <MiniAlertBox
-        isVisible={miniAlertBox.isVisible}
-        text={miniAlertBox.text}
-        type={miniAlertBox.type}
-        onClose={(prev) => setMiniAlertBox({ ...prev, isVisible: false})}
+          isVisible={miniAlertBox.isVisible}
+          text={miniAlertBox.text}
+          type={miniAlertBox.type}
+          onClose={(prev) => setMiniAlertBox({ ...prev, isVisible: false })}
         />
 
         <Button
