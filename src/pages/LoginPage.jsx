@@ -62,6 +62,13 @@ const LoginPage = () => {
 
       setIsLoggedIn(true);
       localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
+
+      const userData = {
+        userId: result.loginResult.userId, 
+        name: result.loginResult.name,
+      }
+
+      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(userData))
       navigate("/");
     } catch (error) {
       let message = "Terjadi kesalahan saat login.";

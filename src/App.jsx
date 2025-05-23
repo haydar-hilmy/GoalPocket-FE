@@ -11,6 +11,7 @@ import DashboardPage from "./pages/App/DashboardPage";
 import AddTransactionPage from "./pages/App/AddTransactionPage";
 import RequireAuth from "./utils/auth/RequireAuth";
 import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
+import { LogoutPage } from "./pages/LogoutPage";
 
 function App() {
   const myRouter = createBrowserRouter([
@@ -45,7 +46,11 @@ function App() {
           <AddTransactionPage />
         </RequireAuth>
       )
-    }
+    },
+    {
+      path: "/logout",
+      element: <LogoutPage />
+    },
   ]);
 
   return (

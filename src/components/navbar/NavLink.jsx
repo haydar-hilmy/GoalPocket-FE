@@ -1,7 +1,13 @@
-import { href, Link } from "react-router"
+import { href, Link } from "react-router";
 
-export const NavLink = ({ children, hrefTo, isActive = false }) => {
-    return <Link className={`
+export const NavLink = ({ children, hrefTo, isActive = false, text = "" }) => {
+  return (
+    <Link
+      className={`
+    flex
+    flex-row
+    items-center
+    gap-3
     text-[#494a50]
     p-2.5
     duration-100
@@ -14,5 +20,11 @@ export const NavLink = ({ children, hrefTo, isActive = false }) => {
     hover:border-white
     hover:shadow-md
 
-    `} to={hrefTo}>{children}</Link>
-}
+    `}
+      to={hrefTo}
+    >
+      {children}
+      <p className="sm:hidden">{text}</p>
+    </Link>
+  );
+};
