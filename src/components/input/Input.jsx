@@ -1,15 +1,19 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PasswordStrengthBar from "../barLevel/passwordStrengthBar";
 import { Button } from "../button/Button";
+import { useController } from "react-hook-form";
+import countries from "i18n-iso-countries";
+import Select from "react-select";
+import enLocale from "i18n-iso-countries/langs/id.json";
 
 const StyleFieldInput =
   "w-full py-3 placeholder:text-[0.9rem] bg-transparent focus:outline-none";
 
-const FieldInput = ({ children, variant, isError = false }) => {
+const FieldInput = ({ children, variant, isError = false, isDisabled = false }) => {
   return (
     <div
-      className={`${variant} flex flex-row items-center rounded-full w-full bg-white outline outline-1 outline-[#D0D5DD] ${
+      className={`${variant} ${isDisabled ? "bg-[#f0f0f0]" : "bg-white"} flex flex-row items-center rounded-full w-full outline outline-1 outline-[#D0D5DD] ${
         isError
           ? "focus-within:outline-[#ff0c0c] focus-within:shadow-[0_0_0_7px_rgba(255,0,0,0.15)]"
           : "focus-within:outline-[#0087FF] focus-within:shadow-[0_0_0_7px_rgba(74,157,236,0.15)]"
@@ -27,7 +31,8 @@ const PasswordInput = ({
   errorMsg = "",
   placeholder = "********",
   text = "Kata Sandi",
-  hook_form
+  hook_form,
+  isDisabled = false
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
@@ -44,7 +49,7 @@ const PasswordInput = ({
         <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
           {text}
         </label>
-        <FieldInput isError={errorMsg != "" ? true : false}>
+        <FieldInput isError={errorMsg != "" ? true : false} isDisabled={isDisabled}>
           <input
             {...hook_form}
             autoComplete={name}
@@ -83,7 +88,8 @@ const MainInput = ({
   autofocus = false,
   hook_form,
   oninput,
-  onchange
+  onchange,
+  isDisabled = false,
 }) => {
   return (
     <>
@@ -91,7 +97,7 @@ const MainInput = ({
         <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
           {text}
         </label>
-        <FieldInput isError={errorMsg != "" ? true : false}>
+        <FieldInput isError={errorMsg != "" ? true : false} isDisabled={isDisabled}>
           <input
             {...hook_form}
             autoFocus={autofocus}
@@ -104,6 +110,7 @@ const MainInput = ({
             name={name}
             onChange={onchange}
             onInput={oninput}
+            disabled={isDisabled}
           />
         </FieldInput>
 
@@ -179,4 +186,134 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
   );
 };
 
-export { MainInput, PasswordInput, InOutComeInput };
+
+const PhoneNumberInput = ({
+  name = "phone",
+  errorMsg = "",
+  placeholder = "+62 822 2333 4566",
+  text = "Nomor HP",
+  autofocus = false,
+  hook_form = {},
+  onChange,
+  isDisabled = false,
+}) => {
+  const [displayValue, setDisplayValue] = useState("");
+
+  const formatPhoneNumber = (value) => {
+    let digits = value.replace(/\D/g, "");
+    if (digits.startsWith("62")) digits = digits.slice(2);
+    if (digits.startsWith("0")) digits = digits.slice(1);
+
+    if (!digits) return ""; // kosongkan jika tidak ada angka
+
+    let formatted = "+62 ";
+    for (let i = 0; i < digits.length && i < 11; i += 4) {
+      formatted += digits.substring(i, i + 4) + " ";
+    }
+    return formatted.trim();
+  };
+
+  const handleInputChange = (e) => {
+    let rawValue = e.target.value.replace(/\D/g, "");
+    if (rawValue.startsWith("62")) rawValue = rawValue.slice(2);
+    if (rawValue.startsWith("0")) rawValue = rawValue.slice(1);
+    const finalDigits = rawValue.slice(0, 11); // max 11 digits after +62
+    const display = formatPhoneNumber("+62" + finalDigits);
+    setDisplayValue(display);
+
+    if (onChange) {
+      const formattedValue = finalDigits ? "+62" + finalDigits : "";
+      onChange({
+        ...e,
+        target: {
+          ...e.target,
+          value: formattedValue,
+          name: name,
+        },
+      });
+    }
+  };
+
+  return (
+    <div className="form-control flex flex-col gap-1 w-full">
+      <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
+        {text}
+      </label>
+      <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
+        <input
+          {...hook_form}
+          type="text"
+          inputMode="numeric"
+          autoFocus={autofocus}
+          autoComplete="tel"
+          className={`${StyleFieldInput} px-5`}
+          placeholder={placeholder}
+          id={name}
+          name={name}
+          value={displayValue}
+          onChange={handleInputChange}
+          disabled={isDisabled}
+        />
+      </FieldInput>
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">{errorMsg}</small>
+    </div>
+  );
+};
+
+
+
+
+countries.registerLocale(enLocale);
+
+const CountrySearchSelectInput = ({
+  name = "country",
+  errorMsg = "",
+  text = "Negara",
+  hook_form,
+  isDisabled = false,
+  onchange,
+}) => {
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    const countryObj = countries.getNames("id", { select: "official" });
+    const countryArr = Object.entries(countryObj).map(([code, name]) => ({
+      value: code,
+      label: name,
+    }));
+    setOptions(countryArr);
+  }, []);
+
+  return (
+    <div className="form-control flex flex-col gap-1 w-full">
+      <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
+        {text}
+      </label>
+
+      <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
+        <div className="w-full border-none border-0 outline-none px-5 py-[0.35rem]">
+          <Select
+          className="border-0"
+            id={name}
+            name={name}
+            options={options}
+            isDisabled={isDisabled}
+            onChange={(selectedOption) => {
+              onchange?.({ target: { name, value: selectedOption?.value } });
+              if (hook_form?.onChange) {
+                hook_form.onChange({ target: { value: selectedOption?.value } });
+              }
+            }}
+            classNamePrefix="react-select"
+            placeholder="Cari negara..."
+            isSearchable
+          />
+        </div>
+      </FieldInput>
+
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">{errorMsg}</small>
+    </div>
+  );
+};
+
+export { MainInput, PasswordInput, InOutComeInput, PhoneNumberInput, CountrySearchSelectInput };
