@@ -26,58 +26,56 @@ const FieldInput = ({ children, variant, isError = false, isDisabled = false }) 
 
 const PasswordInput = ({
   isLevelBar = true,
-  name = "Kata Sandi",
+  name = "password",
   minLen = 1,
   errorMsg = "",
   placeholder = "********",
   text = "Kata Sandi",
-  hook_form,
-  isDisabled = false
+  isDisabled = false,
+  value,
+  onChange,
+  onBlur,
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
 
-  const [password, setPassword] = useState("");
-
-  const handleChange = (e) => {
-    setPassword(e.target.value);
-  };
 
   return (
-    <>
-      <div className="form-control flex flex-col gap-1 w-full">
-        <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
-          {text}
-        </label>
-        <FieldInput isError={errorMsg != "" ? true : false} isDisabled={isDisabled}>
-          <input
-            {...hook_form}
-            autoComplete={name}
-            minLength={minLen}
-            className={`${StyleFieldInput} pl-5`}
-            placeholder={placeholder}
-            id={name}
-            name={name}
-            type={visible ? "text" : "password"}
-            onChange={handleChange}
-          />
-          <span
-            onClick={toggleVisibility}
-            className="cursor-pointer hover:bg-[#f5f5f5] rounded-full duration-100 p-3"
-          >
-            {visible ? <Visibility /> : <VisibilityOff />}
-          </span>
-        </FieldInput>
+    <div className="form-control flex flex-col gap-1 w-full">
+      <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
+        {text}
+      </label>
+      <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
+        <input
+          id={name}
+          name={name}
+          autoComplete={name}
+          minLength={minLen}
+          className={`${StyleFieldInput} pl-5`}
+          placeholder={placeholder}
+          type={visible ? "text" : "password"}
+          disabled={isDisabled}
+          value={value} //  use value from RHF
+          onChange={onChange} // use onChange from RHF
+          onBlur={onBlur} // use onBlur from RHF
+        />
+        <span
+          onClick={toggleVisibility}
+          className="cursor-pointer hover:bg-[#f5f5f5] rounded-full duration-100 p-3"
+        >
+          {visible ? <Visibility /> : <VisibilityOff />}
+        </span>
+      </FieldInput>
 
-        {isLevelBar ? <PasswordStrengthBar password={password} /> : ""}
+      {isLevelBar ? <PasswordStrengthBar password={value || ""} /> : null}
 
-        <small className="text-red-500 text-[0.8rem] ml-[20px]">
-          {errorMsg}
-        </small>
-      </div>
-    </>
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">
+        {errorMsg}
+      </small>
+    </div>
   );
 };
+
 
 const MainInput = ({
   name = "Input",
@@ -87,9 +85,11 @@ const MainInput = ({
   text = "Input",
   autofocus = false,
   hook_form,
-  oninput,
-  onchange,
   isDisabled = false,
+  onBlur,
+  onInput,
+  onChange,
+  value,
 }) => {
   return (
     <>
@@ -101,6 +101,7 @@ const MainInput = ({
           <input
             {...hook_form}
             autoFocus={autofocus}
+            onBlur={onBlur}
             type="text"
             minLength={minLen}
             autoComplete={name}
@@ -108,9 +109,10 @@ const MainInput = ({
             placeholder={placeholder}
             id={name}
             name={name}
-            onChange={onchange}
-            onInput={oninput}
+            onChange={onChange}
+            onInput={onInput}
             disabled={isDisabled}
+            value={value ?? ""}
           />
         </FieldInput>
 
@@ -193,18 +195,28 @@ const PhoneNumberInput = ({
   placeholder = "+62 822 2333 4566",
   text = "Nomor HP",
   autofocus = false,
-  hook_form = {},
-  onChange,
   isDisabled = false,
+  value = "", // from Controller
+  onChange, // from Controller
+  onBlur, // optional from Controller
 }) => {
   const [displayValue, setDisplayValue] = useState("");
+
+  useEffect(() => {
+    // Update formatted value when controlled value changes (from RHF)
+    if (value) {
+      setDisplayValue(formatPhoneNumber(value));
+    } else {
+      setDisplayValue("");
+    }
+  }, [value]);
 
   const formatPhoneNumber = (value) => {
     let digits = value.replace(/\D/g, "");
     if (digits.startsWith("62")) digits = digits.slice(2);
     if (digits.startsWith("0")) digits = digits.slice(1);
 
-    if (!digits) return ""; // kosongkan jika tidak ada angka
+    if (!digits) return "";
 
     let formatted = "+62 ";
     for (let i = 0; i < digits.length && i < 11; i += 4) {
@@ -217,21 +229,14 @@ const PhoneNumberInput = ({
     let rawValue = e.target.value.replace(/\D/g, "");
     if (rawValue.startsWith("62")) rawValue = rawValue.slice(2);
     if (rawValue.startsWith("0")) rawValue = rawValue.slice(1);
-    const finalDigits = rawValue.slice(0, 11); // max 11 digits after +62
-    const display = formatPhoneNumber("+62" + finalDigits);
-    setDisplayValue(display);
 
-    if (onChange) {
-      const formattedValue = finalDigits ? "+62" + finalDigits : "";
-      onChange({
-        ...e,
-        target: {
-          ...e.target,
-          value: formattedValue,
-          name: name,
-        },
-      });
-    }
+    const finalDigits = rawValue.slice(0, 11);
+    const formattedDisplay = formatPhoneNumber("+62" + finalDigits);
+    setDisplayValue(formattedDisplay);
+
+    const finalValue = finalDigits ? "+62" + finalDigits : "";
+
+    onChange?.(finalValue);
   };
 
   return (
@@ -241,7 +246,6 @@ const PhoneNumberInput = ({
       </label>
       <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
         <input
-          {...hook_form}
           type="text"
           inputMode="numeric"
           autoFocus={autofocus}
@@ -252,6 +256,7 @@ const PhoneNumberInput = ({
           name={name}
           value={displayValue}
           onChange={handleInputChange}
+          onBlur={onBlur}
           disabled={isDisabled}
         />
       </FieldInput>
@@ -278,8 +283,8 @@ const CountrySearchSelectInput = ({
   useEffect(() => {
     const countryObj = countries.getNames("id", { select: "official" });
     const countryArr = Object.entries(countryObj).map(([code, name]) => ({
-      value: code,
-      label: name,
+      value: name,
+      label: `${name} (${code})`,
     }));
     setOptions(countryArr);
   }, []);
@@ -297,6 +302,7 @@ const CountrySearchSelectInput = ({
             id={name}
             name={name}
             options={options}
+            value={options.find((opt) => opt.value === hook_form?.value) || null}
             isDisabled={isDisabled}
             onChange={(selectedOption) => {
               onchange?.({ target: { name, value: selectedOption?.value } });

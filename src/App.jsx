@@ -16,44 +16,54 @@ import { ProfilePage } from "./pages/App/ProfilePage";
 
 function App() {
   const myRouter = createBrowserRouter([
-  {
-    path: "/login",
-    element: (
-      <RedirectIfLoggedIn>
-        <LoginPage />
-      </RedirectIfLoggedIn>
-    ),
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/forgot",
-    element: <RecoveryPage />,
-  },
-  {
-    path: "/logout",
-    element: <LogoutPage />,
-  },
-  {
-    element: <RequireAuth />,
-    children: [
-      {
-        path: "/",
-        element: <DashboardPage />,
-      },
-      {
-        path: "/add",
-        element: <AddTransactionPage />,
-      },
-      {
-        path: "/profile",
-        element: <ProfilePage />
-      },
-    ],
-  },
-]);
+    {
+      path: "/login",
+      element: (
+        <RedirectIfLoggedIn>
+          <LoginPage />
+        </RedirectIfLoggedIn>
+      ),
+    },
+    {
+      path: "/register",
+      element: <RegisterPage />,
+    },
+    {
+      path: "/forgot",
+      element: <RecoveryPage />,
+    },
+    {
+      path: "/logout",
+      element: <LogoutPage />,
+    },
+    {
+      element: <RequireAuth />,
+      children: [
+        {
+          path: "/",
+          element: <DashboardPage />,
+        },
+        {
+          path: "/add",
+          element: <AddTransactionPage />,
+        },
+        {
+          path: "/profile",
+          element: (
+            <ProfilePage
+              defaultData={{
+                name: "Jong Xina",
+                email: "jongxina@example.com",
+                phone: "82345432786",
+                address: "Jl Hamburg Briden Soyem",
+                country: "Indonesia",
+              }}
+            />
+          ),
+        },
+      ],
+    },
+  ]);
 
   return (
     <>

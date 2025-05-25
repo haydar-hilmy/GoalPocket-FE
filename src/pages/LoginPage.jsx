@@ -3,7 +3,7 @@ import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import { Close } from "@mui/icons-material";
 import { MiniAlertBox } from "../components/alertBox/alertBox";
@@ -14,7 +14,7 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    control,
   } = useForm({
     mode: "onSubmit",
   });
@@ -64,11 +64,11 @@ const LoginPage = () => {
       localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
 
       const userData = {
-        userId: result.loginResult.userId, 
+        userId: result.loginResult.userId,
         name: result.loginResult.name,
-      }
+      };
 
-      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(userData))
+      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(userData));
       navigate("/");
     } catch (error) {
       let message = "Terjadi kesalahan saat login.";
@@ -108,29 +108,41 @@ const LoginPage = () => {
         onSubmit={handleSubmit(onFormSubmit)}
         className="w-full flex flex-col gap-4"
       >
-        <MainInput
-          autofocus={true}
+        <Controller
           name="email"
-          errorMsg={errors.email ? errors.email.message : ""}
-          placeholder="goalpocket@example.com"
-          text="Alamat Email"
-          hook_form={register("email", {
+          control={control}
+          rules={{
             required: "Email wajib diisi.",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{1,}$/i,
               message: "Masukkan email dengan format yang benar.",
             },
-          })}
+          }}
+          render={({ field, fieldState }) => (
+            <MainInput
+              {...field}
+              autofocus={true}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="goalpocket@example.com"
+              text="Alamat Email"
+            />
+          )}
         />
-        <PasswordInput
-          isLevelBar={false}
+        <Controller
           name="password"
-          errorMsg={errors.password ? errors.password.message : ""}
-          placeholder="********"
-          text="Kata Sandi"
-          hook_form={register("password", {
+          control={control}
+          rules={{
             required: "Kata sandi wajib diisi.",
-          })}
+          }}
+          render={({ field, fieldState }) => (
+            <PasswordInput
+              {...field}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="********"
+              text="Kata Sandi"
+              isLevelBar={false}
+            />
+          )}
         />
 
         <div className="flex flex-row items-center justify-between">

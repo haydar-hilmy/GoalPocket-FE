@@ -1,64 +1,135 @@
-import { useForm } from "react-hook-form";
-import { CountrySearchSelectInput, MainInput, PhoneNumberInput } from "../../components/input/Input";
+import { Controller, useForm } from "react-hook-form";
+import {
+  CountrySearchSelectInput,
+  MainInput,
+  PhoneNumberInput,
+} from "../../components/input/Input";
 import AppLayout from "../../layouts/AppLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Button } from "../../components/button/Button";
+import Swal from "sweetalert2";
 
-export const ProfilePage = () => {
+export const ProfilePage = ({ defaultData }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
-    register,
     handleSubmit,
-    setValue,
+    control,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  useEffect(() => {
+    if (defaultData) {
+      reset(defaultData);
+    }
+  }, [defaultData, reset]);
 
   const onSubmit = (data) => {
-    console.log("Sending Data", data);
+    setIsLoading(true);
+    const cleanedPhone = data.phone.replace(/\s+/g, "");
+
+    const cleanedData = {
+      ...data,
+      phone: cleanedPhone,
+    };
+
+    console.log("Sending Data: ", cleanedData);
+    Swal.fire({
+      title: "Berhasil!",
+      text: "Data berhasil diubah.",
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    setIsLoading(false);
   };
 
   return (
     <AppLayout title="Profil" page="Profil Saya">
-      <div className="flex flex-row w-full gap-5">
+      <div className="flex flex-col sm:flex-row w-full gap-5">
         <div>
           <img className="w-16" src="/user/default-user.png" alt="" />
         </div>
         <div className="w-full">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#F5F5FC] p-5 rounded-md"
+            className="bg-[#F5F5FC] p-5 rounded-md flex flex-col gap-5"
           >
-            <MainInput
-              name="nama"
-              minLen={1}
-              errorMsg=""
-              placeholder={"misal: John Doe"}
-              text={"Nama"}
-              autofocus={true}
+            <Controller
+              name="name"
+              control={control}
+              rules={{ required: "Nama wajib diisi" }}
+              render={({ field }) => (
+                <MainInput
+                  {...field}
+                  minLen={1}
+                  errorMsg={errors.name?.message}
+                  placeholder="misal: John Doe"
+                  text="Nama"
+                  autofocus={true}
+                />
+              )}
             />
-            <MainInput
+            <Controller
               name="email"
-              minLen={1}
-              errorMsg=""
-              placeholder={"goalpocket@example.com"}
-              text={"Alamat Email"}
+              control={control}
+              rules={{ required: "Email wajib diisi" }}
+              render={({ field }) => (
+                <MainInput
+                  {...field}
+                  minLen={1}
+                  isDisabled={true}
+                  errorMsg={errors.name?.message}
+                  placeholder="goalpocket@example.com"
+                  text="Alamat Email"
+                />
+              )}
             />
-            <PhoneNumberInput
+            <Controller
               name="phone"
-              text="Nomor HP"
-              errorMsg={errors.phone?.message}
-              hook_form={register("phone", {
+              control={control}
+              rules={{
                 required: "Nomor HP wajib diisi",
-              })}
-              onChange={(e) => setValue("phone", e.target.value)}
+              }}
+              render={({ field, fieldState }) => (
+                <PhoneNumberInput
+                  {...field}
+                  errorMsg={fieldState.error?.message || ""}
+                  text="Nomor HP"
+                />
+              )}
             />
-            <MainInput
-              name="alamat"
-              minLen={1}
-              errorMsg=""
-              placeholder={"Contoh: Jl. Merdeka No. 123, Bandung"}
-              text={"Alamat"}
+            <Controller
+              name="address"
+              control={control}
+              rules={{ required: "Alamat wajib diisi" }} // opsional, sesuai kebutuhan validasi
+              render={({ field, fieldState }) => (
+                <MainInput
+                  {...field}
+                  minLen={1}
+                  errorMsg={fieldState.error?.message || ""}
+                  placeholder="Contoh: Jl. Merdeka No. 123, Bandung"
+                  text="Alamat"
+                />
+              )}
             />
-            <CountrySearchSelectInput />
-            <button type="submit">Kirim</button>
+            <Controller
+              name="country"
+              control={control}
+              rules={{ required: "Negara wajib diisi" }}
+              render={({ field, fieldState }) => (
+                <CountrySearchSelectInput
+                  name="country"
+                  hook_form={field}
+                  errorMsg={fieldState.error?.message || ""}
+                />
+              )}
+            />
+            <Button isLoading={isLoading} text={"Ubah Profil"} />
           </form>
         </div>
       </div>
