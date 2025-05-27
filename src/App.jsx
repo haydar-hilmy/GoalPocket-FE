@@ -13,6 +13,7 @@ import RequireAuth from "./utils/auth/RequireAuth";
 import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
 import { LogoutPage } from "./pages/LogoutPage";
 import { ProfilePage } from "./pages/App/ProfilePage";
+import ChangePasswordPage from "./pages/App/ChangePassswordPage";
 
 function App() {
   const myRouter = createBrowserRouter([
@@ -61,6 +62,10 @@ function App() {
             />
           ),
         },
+        {
+          path: "/pass",
+          element: <ChangePasswordPage />
+        }
       ],
     },
   ]);

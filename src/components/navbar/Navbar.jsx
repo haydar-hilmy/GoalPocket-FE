@@ -63,10 +63,10 @@ const Navbar = ({ page = "home", user }) => {
             <NavLink text="Money">
               <Icon.MoneyWavy />
             </NavLink>
-            <NavLink text="Key">
+            <NavLink hrefTo={"/pass"} isActive={page == "Ganti Password"} text="Key">
               <Icon.Key />
             </NavLink>
-            <NavLink text="Profile" hrefTo={"/profile"} isActive={page == "profile"}>
+            <NavLink text="Profile" hrefTo={"/profile"} isActive={page == "Profil Saya"}>
               <Icon.UserCircle />
             </NavLink>
             <NavLink text="Log out" hrefTo={"/logout"}>

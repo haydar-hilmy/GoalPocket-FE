@@ -3,22 +3,32 @@ import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
 
 const RegisterPage = () => {
   const {
-    register,
+    control,
     handleSubmit,
     watch,
+    register,
     formState: { errors, isValid },
   } = useForm({
     mode: "onSubmit",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const password = watch("password");
 
   const onFormSubmit = (data) => {
-    alert(`username: ${data.username}\nemail: ${data.email}\npassword: ${data.password}`);
+    setIsLoading(true);
+
+    alert(
+      `username: ${data.username}\nemail: ${data.email}\npassword: ${data.password}`
+    );
+
+    setIsLoading(false);
   };
 
   return (
@@ -36,53 +46,79 @@ const RegisterPage = () => {
         onSubmit={handleSubmit(onFormSubmit)}
         className="w-full flex flex-col gap-4"
       >
-        <MainInput
-          autofocus={true}
+        <Controller
           name="username"
-          errorMsg={errors.username ? errors.username.message : ""}
-          placeholder="misal: johndoe"
-          text="Nama Pengguna"
-          hook_form={register("username", {
+          control={control}
+          rules={{
             required: "Nama pengguna wajib diisi",
-          })}
+          }}
+          render={({ field, fieldState }) => (
+            <MainInput
+              {...field}
+              autofocus={true}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="misal: johndoe"
+              text="Nama Pengguna"
+            />
+          )}
         />
-        <MainInput
+        <Controller
           name="email"
-          errorMsg={errors.email ? errors.email.message : ""}
-          placeholder="goalpocket@example.com"
-          text="Alamat Email"
-          hook_form={register("email", {
+          control={control}
+          rules={{
             required: "Email wajib diisi.",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{1,}$/i,
               message: "Masukkan email dengan format yang benar.",
             },
-          })}
+          }}
+          render={({ field, fieldState }) => (
+            <MainInput
+              {...field}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="goalpocket@example.com"
+              text="Alamat Email"
+            />
+          )}
         />
-        <PasswordInput
+        
+        <Controller
           name="password"
-          errorMsg={errors.password ? errors.password.message : ""}
-          placeholder="********"
-          text="Kata Sandi"
-          hook_form={register("password", {
+          control={control}
+          rules={{
             required: "Kata sandi wajib diisi.",
             pattern: {
               value: /^.{8,}$/,
               message: "Kata sandi minimal terdiri dari 8 karakter",
             },
-          })}
+          }}
+          render={({ field, fieldState }) => (
+            <PasswordInput
+              {...field}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="********"
+              text="Kata Sandi"
+              isLevelBar={true}
+            />
+          )}
         />
-        <PasswordInput
+        <Controller
           name="passwordconfirm"
-          errorMsg={
-            errors.passwordconfirm ? errors.passwordconfirm.message : ""
-          }
-          placeholder="********"
-          text="Konfirmasi Kata Sandi"
-          hook_form={register("passwordconfirm", {
+          control={control}
+          rules={{
             required: "Konfirmasi kata sandi.",
-            validate: (value) => value === password || "Konfirmasi kata sandi belum sama",
-          })}
+            validate: (value) =>
+              value === password || "Konfirmasi kata sandi belum sama",
+          }}
+          render={({ field, fieldState }) => (
+            <PasswordInput
+              {...field}
+              errorMsg={fieldState.error?.message || ""}
+              placeholder="********"
+              text="Konfirmasi Kata Sandi"
+              isLevelBar={false}
+            />
+          )}
         />
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-3">
@@ -102,8 +138,7 @@ const RegisterPage = () => {
             </small>
           </div>
         </div>
-
-        <Button type="submit" text="Daftar Akun" isLoading={false} />
+        <Button type="submit" text="Daftar Akun" isDisabled={isLoading} isLoading={isLoading} />
         <span className="text-[0.9rem] text-center">
           Sudah punya akun?{" "}
           <Link className="text-primary hover:text-blue-300" to={"/login"}>
