@@ -9,11 +9,9 @@ const RencanaPage = () => {
     return (
         <AppLayout page="Rencana Penabungan" subtitle="Investment Plan" title="Rencana Penabungan">
             <div className="w-full flex flex-col items-end">
-                <Button onclick={() => setIsOpenFormModal(prev => !prev)} variant={"py-1.5"} text={"Buat Rencana"} />
+                <Button onclick={() => setIsOpenFormModal(true)} variant={"py-1.5"} text={"Buat Rencana"} />
             </div>
-            <div>
-            {isOpenFormModal && ( <RencanaFormModal /> )}
-            </div>
+            <RencanaFormModal isShow={isOpenFormModal} />
         </AppLayout>
     );
 };

@@ -5,7 +5,7 @@ import { MainInput, RupiahInput } from "../input/Input";
 import { useState } from "react";
 
 const RencanaFormModal = ({
-  isShow = true,
+  isShow = false,
   onClose,
   onSubmit,
   title = "Modal Title",
@@ -14,17 +14,28 @@ const RencanaFormModal = ({
     mode: "onSubmit",
   });
 
+  const [isModalShow, setIsModalShow] = useState(isShow);
+
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 
   const onFormSubmit = (data) => {
     setIsBtnLoading(true);
-    console.log("Sending Rencana: ", data.target);
+
+    // Fetch API (....) belum ada dokumentasi dari Backend (27 Mei)
+    const dataRencana = {
+      target: data?.target ?? "",
+      harga: data?.harga ?? 0,
+      tabungan_awal: data?.tabungan_awal ?? 0,
+      pemasukan: data?.pemasukan ?? 0,
+      pengeluaran: data?.pengeluaran ?? 0,
+    };
+    console.log("Sending Rencana: ", dataRencana);
     setIsBtnLoading(false);
   };
 
   return (
     <div
-      className={`${isShow ? "block" : "hidden"}
+      className={`${isModalShow ? "block" : "hidden"}
     absolute
     top-0
     left-0
@@ -47,7 +58,7 @@ const RencanaFormModal = ({
             <h3 className="font-bold text-lg">{title}</h3>
           </div>
           <div>
-            <div className="p-2.5 cursor-pointer rounded-sm bg-white w-fit h-fit duration-75 hover:bg-gray-100">
+            <div onClick={() => setIsModalShow(prev => !prev)} className="p-2.5 cursor-pointer rounded-sm bg-white w-fit h-fit duration-75 hover:bg-gray-100">
               <Icon.Cross />
             </div>
           </div>
@@ -84,16 +95,73 @@ const RencanaFormModal = ({
             render={({ field, fieldState }) => (
               <>
                 <RupiahInput
+                  name="harga"
+                  text="Harga"
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Rp 4.000.000"
-                  required
+                  errorMsg={fieldState.error?.message || ""}
                 />
-                {fieldState.error && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {fieldState.error.message}
-                  </p>
-                )}
+              </>
+            )}
+          />
+
+          <Controller
+            name="tabungan_awal"
+            control={control}
+            rules={{
+              required: "Tabungan awal wajib diisi.",
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <RupiahInput
+                  name="tabungan_awal"
+                  text="Tabungan Awal"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Rp 4.000.000"
+                  errorMsg={fieldState.error?.message || ""}
+                />
+              </>
+            )}
+          />
+
+          <Controller
+            name="pemasukan"
+            control={control}
+            rules={{
+              required: "Pemasukan wajib diisi.",
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <RupiahInput
+                  name="pemasukan"
+                  text="Pemasukan"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Rp 4.000.000"
+                  errorMsg={fieldState.error?.message || ""}
+                />
+              </>
+            )}
+          />
+
+          <Controller
+            name="pengeluaran"
+            control={control}
+            rules={{
+              required: "Pengeluaran tetap wajib diisi.",
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <RupiahInput
+                  name="pengeluaran"
+                  text="Pengeluaran Tetap"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Rp 4.000.000"
+                  errorMsg={fieldState.error?.message || ""}
+                />
               </>
             )}
           />
