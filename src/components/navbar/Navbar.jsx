@@ -54,10 +54,10 @@ const Navbar = ({ page = "home", user }) => {
             >
               <Icon.House />
             </NavLink>
-            <NavLink text="Currency" hrefTo={"/rencana"}>
+            <NavLink text="Currency" hrefTo={"/rencana"} isActive={page == "Rencana Penabungan"}>
               <Icon.CurrencyCircleDollar />
             </NavLink>
-            <NavLink text="Card" hrefTo={"/add"}>
+            <NavLink text="Card" hrefTo={"/add"} isActive={page == "Catat Transaksi"}>
               <Icon.CreditCard />
             </NavLink>
             <NavLink text="Money">

@@ -10,10 +10,17 @@ import enLocale from "i18n-iso-countries/langs/id.json";
 const StyleFieldInput =
   "w-full py-3 placeholder:text-[0.9rem] bg-transparent focus:outline-none";
 
-const FieldInput = ({ children, variant, isError = false, isDisabled = false }) => {
+const FieldInput = ({
+  children,
+  variant,
+  isError = false,
+  isDisabled = false,
+}) => {
   return (
     <div
-      className={`${variant} ${isDisabled ? "bg-[#f0f0f0]" : "bg-white"} flex flex-row items-center rounded-full w-full outline outline-1 outline-[#D0D5DD] ${
+      className={`${variant} ${
+        isDisabled ? "bg-[#f0f0f0]" : "bg-white"
+      } flex flex-row items-center rounded-full w-full outline outline-1 outline-[#D0D5DD] ${
         isError
           ? "focus-within:outline-[#ff0c0c] focus-within:shadow-[0_0_0_7px_rgba(255,0,0,0.15)]"
           : "focus-within:outline-[#0087FF] focus-within:shadow-[0_0_0_7px_rgba(74,157,236,0.15)]"
@@ -38,7 +45,6 @@ const PasswordInput = ({
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
-
 
   return (
     <div className="form-control flex flex-col gap-1 w-full">
@@ -69,13 +75,10 @@ const PasswordInput = ({
 
       {isLevelBar ? <PasswordStrengthBar password={value || ""} /> : null}
 
-      <small className="text-red-500 text-[0.8rem] ml-[20px]">
-        {errorMsg}
-      </small>
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">{errorMsg}</small>
     </div>
   );
 };
-
 
 const MainInput = ({
   name = "Input",
@@ -97,7 +100,10 @@ const MainInput = ({
         <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
           {text}
         </label>
-        <FieldInput isError={errorMsg != "" ? true : false} isDisabled={isDisabled}>
+        <FieldInput
+          isError={errorMsg != "" ? true : false}
+          isDisabled={isDisabled}
+        >
           <input
             {...hook_form}
             autoFocus={autofocus}
@@ -124,6 +130,7 @@ const MainInput = ({
   );
 };
 
+// Komponen ini tidak mewajibkan <Controller>
 const InOutComeInput = ({ title, categories = [], onSubmit }) => {
   const [category, setCategory] = useState("");
   const [displayAmount, setDisplayAmount] = useState("");
@@ -188,6 +195,40 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
   );
 };
 
+const RupiahInput = ({
+  value = "",
+  onChange,
+  placeholder = "Rp _____",
+  required = false,
+}) => {
+  const [displayValue, setDisplayValue] = useState("");
+
+  const formatCurrency = (val) => {
+    if (!val) return "";
+    return "Rp " + parseInt(val).toLocaleString("id-ID");
+  };
+
+  useEffect(() => {
+    setDisplayValue(formatCurrency(value));
+  }, [value]);
+
+  const handleChange = (e) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    setDisplayValue(formatCurrency(raw));
+    onChange(raw);
+  };
+
+  return (
+    <input
+      type="text"
+      className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+      placeholder={placeholder}
+      value={displayValue}
+      onChange={handleChange}
+      required={required}
+    />
+  );
+};
 
 const PhoneNumberInput = ({
   name = "phone",
@@ -265,9 +306,6 @@ const PhoneNumberInput = ({
   );
 };
 
-
-
-
 countries.registerLocale(enLocale);
 
 const CountrySearchSelectInput = ({
@@ -298,16 +336,20 @@ const CountrySearchSelectInput = ({
       <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
         <div className="w-full border-none border-0 outline-none px-5 py-[0.35rem]">
           <Select
-          className="border-0"
+            className="border-0"
             id={name}
             name={name}
             options={options}
-            value={options.find((opt) => opt.value === hook_form?.value) || null}
+            value={
+              options.find((opt) => opt.value === hook_form?.value) || null
+            }
             isDisabled={isDisabled}
             onChange={(selectedOption) => {
               onchange?.({ target: { name, value: selectedOption?.value } });
               if (hook_form?.onChange) {
-                hook_form.onChange({ target: { value: selectedOption?.value } });
+                hook_form.onChange({
+                  target: { value: selectedOption?.value },
+                });
               }
             }}
             classNamePrefix="react-select"
@@ -322,4 +364,11 @@ const CountrySearchSelectInput = ({
   );
 };
 
-export { MainInput, PasswordInput, InOutComeInput, PhoneNumberInput, CountrySearchSelectInput };
+export {
+  MainInput,
+  PasswordInput,
+  InOutComeInput,
+  PhoneNumberInput,
+  CountrySearchSelectInput,
+  RupiahInput,
+};

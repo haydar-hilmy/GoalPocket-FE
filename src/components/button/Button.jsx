@@ -1,9 +1,10 @@
 import { CircularProgress } from "@mui/material";
 
-const Button = ({ text, type, name, isLoading = false, variant, isDisabled = false }) => {
+const Button = ({ text, type, name, isLoading = false, variant, isDisabled = false, onclick }) => {
   return (
     <>
       <button
+        onClick={onclick}
         type={type}
         name={name}
         id={name}
