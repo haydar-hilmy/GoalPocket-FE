@@ -75,7 +75,7 @@ const LoginPage = () => {
       if (error.name === "AbortError") {
         message = "Server tidak merespon. Coba lagi nanti.";
       } else if (
-        error.message.includes("Email") ||
+        error.message.includes("email") ||
         error.message.includes("password")
       ) {
         message = "Email atau password yang dimasukkan salah.";
