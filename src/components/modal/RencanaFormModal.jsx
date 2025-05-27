@@ -7,7 +7,7 @@ const RencanaFormModal = ({
   title = "Modal Title",
 }) => {
   return (
-    <div className={`${isShow ? "block" : "hidden"} absolute z-50 bg-[rgba(0,0,0,0.3)] duration-200`}>
+    <div className={`${isShow ? "block" : "hidden"} absolute top-0 left-0 w-screen h-screen overflow-y-auto flex flex-col justify-center items-center z-[200] bg-[rgba(0,0,0,0.3)] duration-200`}>
       <div className="">
         <div className="flex flex-row">
           <div className="flex-1">

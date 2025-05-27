@@ -13,7 +13,6 @@ const RencanaPage = () => {
             </div>
             <div>
             {isOpenFormModal && ( <RencanaFormModal /> )}
-                {/* Konten tambahan bisa di sini */}
             </div>
         </AppLayout>
     );
