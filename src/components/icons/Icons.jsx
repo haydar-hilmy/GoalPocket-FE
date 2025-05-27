@@ -116,10 +116,31 @@ const BurgerMenu = () => {
       height="24"
       viewBox="0 0 50 50"
     >
-      <path 
-      fill="currentColor"
-      fillOpacity="0.5"
-      d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"></path>
+      <path
+        fill="currentColor"
+        fillOpacity="0.5"
+        d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"
+      ></path>
+    </svg>
+  );
+};
+
+const Cross = () => {
+  return (
+    <svg
+      width="14"
+      height="15"
+      viewBox="0 0 14 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 13.5L13 1.5M1 1.5L13 13.5"
+        stroke="#101828"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   );
 };
@@ -132,4 +153,5 @@ export const Icon = {
   UserCircle: UserCircle,
   CurrencyCircleDollar: CurrencyCircleDollar,
   BurgerMenu: BurgerMenu,
+  Cross: Cross,
 };

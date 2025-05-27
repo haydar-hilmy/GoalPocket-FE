@@ -1,33 +1,30 @@
+import { Icon } from "../icons/icons";
 
-
-const RencanaFormModal = ({ show, onClose, onSubmit }) => {
-    if (!show) return null;
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit();
-        onClose();
-    };
-
-    return (
-        <div className="modal-overlay">
-            <div className="modal-content fade-in">
-                <button className="modal-close" onClick={onClose}>×</button>
-                <h2>Buat Rencana</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Target</label>
-                        <input type="text" required />
-                    </div>
-                    <div className="form-group">
-                        <label>Harga (Rp)</label>
-                        <input type="number" required />
-                    </div>
-                    <button type="submit">Submit</button>
-                </form>
+const RencanaFormModal = ({
+  isShow = true,
+  onClose,
+  onSubmit,
+  title = "Modal Title",
+}) => {
+  return (
+    <div className={`${isShow ? "block" : "hidden"} absolute z-50 bg-[rgba(0,0,0,0.3)] duration-200`}>
+      <div className="">
+        <div className="flex flex-row">
+          <div className="flex-1">
+            <h3>{title}</h3>
+          </div>
+          <div>
+            <div className="p-2.5 cursor-pointer bg-white w-fit h-fit">
+              <Icon.Cross />
             </div>
+          </div>
         </div>
-    );
+
+        {/* FORM CONTENT */}
+        <div></div>
+      </div>
+    </div>
+  );
 };
 
 export default RencanaFormModal;
