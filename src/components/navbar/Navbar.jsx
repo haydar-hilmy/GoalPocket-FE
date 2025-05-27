@@ -54,7 +54,7 @@ const Navbar = ({ page = "home", user }) => {
             >
               <Icon.House />
             </NavLink>
-            <NavLink text="Currency" hrefTo={"/currency"}>
+            <NavLink text="Currency" hrefTo={"/rencana"}>
               <Icon.CurrencyCircleDollar />
             </NavLink>
             <NavLink text="Card" hrefTo={"/add"}>

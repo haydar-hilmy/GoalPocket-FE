@@ -30,7 +30,7 @@ const AppLayout = ({
         <div className="mb-1">
           <HeaderApp username={userData.name} pageName={page} />
           {subtitle && (
-            <small className="block text-gray-500 text-sm leading-snug -mt-2 mb-6">
+            <small className="block text-gray-500 text-sm leading-snug -mt-4 mb-6">
               {subtitle}
             </small>
           )}

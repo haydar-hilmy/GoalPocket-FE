@@ -14,6 +14,7 @@ import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
 import { LogoutPage } from "./pages/LogoutPage";
 import { ProfilePage } from "./pages/App/ProfilePage";
 import ChangePasswordPage from "./pages/App/ChangePassswordPage";
+import RencanaPage from "./pages/App/RencanaPage";
 
 function App() {
   const myRouter = createBrowserRouter([
@@ -68,7 +69,7 @@ function App() {
         },
         {
           path: "/rencana",
-          element: <h1>Rencana</h1>
+          element: <RencanaPage />
         },
       ],
     },
