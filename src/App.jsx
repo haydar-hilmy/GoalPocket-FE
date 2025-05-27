@@ -65,7 +65,11 @@ function App() {
         {
           path: "/pass",
           element: <ChangePasswordPage />
-        }
+        },
+        {
+          path: "/rencana",
+          element: <h1>Rencana</h1>
+        },
       ],
     },
   ]);
