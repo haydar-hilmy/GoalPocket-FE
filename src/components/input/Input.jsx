@@ -196,10 +196,18 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
 };
 
 const RupiahInput = ({
+  name = "rupiah",
   value = "",
   onChange,
   placeholder = "Rp _____",
   required = false,
+  errorMsg = "",
+  text = "Nominal",
+  hook_form,
+  isDisabled = false,
+  onBlur,
+  onInput,
+  autofocus = false,
 }) => {
   const [displayValue, setDisplayValue] = useState("");
 
@@ -219,14 +227,31 @@ const RupiahInput = ({
   };
 
   return (
-    <input
-      type="text"
-      className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-      placeholder={placeholder}
-      value={displayValue}
-      onChange={handleChange}
-      required={required}
-    />
+    <div className="form-control flex flex-col gap-1 w-full">
+      <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
+        {text}
+      </label>
+      <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
+        <input
+          {...hook_form}
+          autoFocus={autofocus}
+          onBlur={onBlur}
+          type="text"
+          autoComplete={name}
+          minLength={1}
+          className={`${StyleFieldInput} px-5`}
+          placeholder={placeholder}
+          id={name}
+          name={name}
+          value={displayValue}
+          onChange={handleChange}
+          onInput={onInput}
+          required={required}
+          disabled={isDisabled}
+        />
+      </FieldInput>
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">{errorMsg}</small>
+    </div>
   );
 };
 
