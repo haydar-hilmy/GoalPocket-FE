@@ -3,6 +3,8 @@ import { PasswordInput } from "../../components/input/Input";
 import AppLayout from "../../layouts/AppLayout";
 import { useState } from "react";
 import { Button } from "../../components/button/Button";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const ChangePasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,22 +18,41 @@ const ChangePasswordPage = () => {
     mode: "onSubmit",
   });
 
+  const navigate = useNavigate();
+
   const newPassword = watch("newpassword");
 
   const onFormSubmit = (data) => {
     setIsLoading(true);
 
-    alert(`
-    Old Password: ${data.oldpassword}
-    New Password: ${data.newpassword}
-    Confirm Password: ${data.confirmpassword}
-    `);
+    // ENDPOINT: PUT /goalpocket/users/password
+
+    // send this to backend API
+    const passwordUpdate = {
+      old_password: data.oldpassword,
+      new_password: data.newpassword,
+    };
+
+    Swal.fire({
+      icon: "success",
+      title: "Password berhasil diganti",
+      text: "Silakan login kembali.",
+      confirmButtonText: "OK",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    });
+
+    navigate("/logout");
+
     setIsLoading(false);
   };
 
   return (
     <AppLayout title="Ganti Password" page="Ganti Password">
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onFormSubmit)}>
+      <form
+        className="flex flex-col gap-5"
+        onSubmit={handleSubmit(onFormSubmit)}
+      >
         <Controller
           name="oldpassword"
           control={control}
