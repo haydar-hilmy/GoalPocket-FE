@@ -9,13 +9,10 @@ import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
 import { CONFIG } from "../../config/Config";
-import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 
 export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -28,6 +25,20 @@ export const ProfilePage = () => {
     },
   });
 
+  useEffect(() => {
+    const storedUserData = localStorage.getItem(CONFIG.LS_USERDATA);
+
+    if (storedUserData) {
+      try {
+        const parsedData = JSON.parse(storedUserData);
+        if (parsedData) {
+          reset(parsedData);
+        }
+      } catch (error) {
+        console.error("Gagal parsing user data dari localStorage:", error);
+      }
+    }
+  }, [reset]);
 
   const onSubmit = (data) => {
     setIsLoading(true);
@@ -38,7 +49,7 @@ export const ProfilePage = () => {
       phone: cleanedPhone,
     };
 
-    console.log("Sending Data: ", cleanedData);
+    // console.log("Sending Data: ", cleanedData);
     Swal.fire({
       title: "Berhasil!",
       text: "Data berhasil diubah.",

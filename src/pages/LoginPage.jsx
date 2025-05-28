@@ -74,6 +74,13 @@ const LoginPage = () => {
       }
 
       localStorage.setItem(CONFIG.LS_KEY, token);
+      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify({
+        name: response.user.name,
+        email: response.user.email,
+        phone: response.user.phoneNumber,
+        address: response.user.address,
+        country: response.user.country,
+      }));
       setIsLoggedIn(true);
 
       if (data.remember) {
