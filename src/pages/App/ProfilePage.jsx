@@ -28,26 +28,6 @@ export const ProfilePage = () => {
     },
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem(CONFIG.LS_KEY);
-
-    if (!token) {
-      navigate("/login", {
-        state: { message: "Sesi Anda telah habis. Silakan login kembali." },
-      });
-      return;
-    }
-
-    try {
-      const decodedUserData = jwtDecode(token);
-      reset(decodedUserData);
-    } catch (error) {
-      console.error("Failed to decode token:", error);
-      navigate("/login", {
-        state: { message: "Token tidak valid. Silakan login ulang." },
-      });
-    }
-  }, [reset, navigate]);
 
   const onSubmit = (data) => {
     setIsLoading(true);
