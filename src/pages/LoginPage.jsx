@@ -4,19 +4,17 @@ import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { Controller, useForm } from "react-hook-form";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Close } from "@mui/icons-material";
 import { MiniAlertBox } from "../components/alertBox/alertBox";
 import { AuthContext } from "../context/AuthContext";
 import { CONFIG } from "../config/Config";
+import { loginUser } from "../data/api";
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
-  const {
-    register,
-    handleSubmit,
-    control,
-  } = useForm({
-    mode: "onSubmit",
+  const { register, handleSubmit, control, setValue } = useForm({
+    mode: "onSubmit"
   });
 
   const navigate = useNavigate();
@@ -27,68 +25,76 @@ const LoginPage = () => {
   const [miniAlertBox, setMiniAlertBox] = useState({
     isVisible: false,
     text: "",
-    type: "info",
+    type: "info"
   });
 
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+
+    if (rememberedEmail) {
+      setValue("email", rememberedEmail);
+      setValue("remember", true);
+    }
+  }, [setValue]);
+
   const onFormSubmit = async (data) => {
+    setBtnLoading(true);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout jika server tidak merespon
     try {
-      setBtnLoading(true);
+      const response = await loginUser({
+        email: data.email,
+        password: data.password
+      });
+      console.log("Response dari loginUser:", response);
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout jika server tidak merespon
-
-      const response = await fetch(
-        `${import.meta.env.VITE_ENDPOINT_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-          signal: controller.signal,
-        }
-      );
-
-      clearTimeout(timeoutId);
-
-      const result = await response.json();
-
-      if (!response.ok || result.error) {
-        throw new Error(result.message || "Login failed");
+      if (!response.user) {
+        throw new Error(
+          response.message || response.error || "Email atau password salah."
+        );
       }
 
+      const token = response.token;
+      const name = response.user.name;
+
+      if (!token) {
+        throw new Error("Token dari server tidak valid.");
+      }
+
+      localStorage.setItem(CONFIG.LS_KEY, token);
       setIsLoggedIn(true);
-      localStorage.setItem(CONFIG.LS_KEY, result.loginResult.token);
 
-      const userData = {
-        userId: result.loginResult.userId,
-        name: result.loginResult.name,
-      };
-
-      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(userData));
-      navigate("/");
-    } catch (error) {
-      let message = "Terjadi kesalahan saat login.";
-      if (error.name === "AbortError") {
-        message = "Server tidak merespon. Coba lagi nanti.";
-      } else if (
-        error.message.includes("email") ||
-        error.message.includes("password")
-      ) {
-        message = "Email atau password yang dimasukkan salah.";
+      if (data.remember) {
+        localStorage.setItem("rememberedEmail", data.email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
       }
 
-      setMiniAlertBox({
-        text: message,
-        isVisible: true,
-        type: "danger",
+      Swal.fire({
+        icon: "success",
+        title: "Login Berhasil",
+        text: `Selamat datang, ${name}!`,
+        timer: 2000,
+        showConfirmButton: false
       });
 
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Login",
+        text: error.message
+      });
       console.error("Login error:", error.message);
+
+      setMiniAlertBox({
+        text: error.message,
+        isVisible: true,
+        type: "danger"
+      });
     } finally {
+      clearTimeout(timeoutId);
       setBtnLoading(false);
     }
   };
@@ -115,8 +121,8 @@ const LoginPage = () => {
             required: "Email wajib diisi.",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{1,}$/i,
-              message: "Masukkan email dengan format yang benar.",
-            },
+              message: "Masukkan email dengan format yang benar."
+            }
           }}
           render={({ field, fieldState }) => (
             <MainInput
@@ -132,7 +138,7 @@ const LoginPage = () => {
           name="password"
           control={control}
           rules={{
-            required: "Kata sandi wajib diisi.",
+            required: "Kata sandi wajib diisi."
           }}
           render={({ field, fieldState }) => (
             <PasswordInput

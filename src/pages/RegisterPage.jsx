@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
+import { registerUser } from "../data/api";
+import Swal from "sweetalert2";
 
 const RegisterPage = () => {
   const {
@@ -12,23 +14,48 @@ const RegisterPage = () => {
     handleSubmit,
     watch,
     register,
-    formState: { errors, isValid },
+    formState: { errors, isValid }
   } = useForm({
-    mode: "onSubmit",
+    mode: "onSubmit"
   });
 
   const [isLoading, setIsLoading] = useState(false);
 
   const password = watch("password");
 
-  const onFormSubmit = (data) => {
+  const navigate = useNavigate();
+
+  const onFormSubmit = async (data) => {
     setIsLoading(true);
 
-    alert(
-      `username: ${data.username}\nemail: ${data.email}\npassword: ${data.password}`
-    );
+    try {
+      const response = await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password
+      });
 
-    setIsLoading(false);
+      Swal.fire({
+        icon: "success",
+        title: "Pendaftaran berhasil!",
+        text: response.message || "Akun berhasil dibuat. Silahkan login",
+        confirmButtonColor: "#3805d6",
+        confirmButtonText: "OK"
+      }).then(() => {
+        navigate("/login");
+      });
+
+      console.log(response.message);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Pendaftaran gagal",
+        text: error.message || "Gagal membuat akun. Silahkan coba lagi",
+        confirmButtonColor: "#d33"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,10 +74,10 @@ const RegisterPage = () => {
         className="w-full flex flex-col gap-4"
       >
         <Controller
-          name="username"
+          name="name"
           control={control}
           rules={{
-            required: "Nama pengguna wajib diisi",
+            required: "Nama pengguna wajib diisi"
           }}
           render={({ field, fieldState }) => (
             <MainInput
@@ -69,8 +96,8 @@ const RegisterPage = () => {
             required: "Email wajib diisi.",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{1,}$/i,
-              message: "Masukkan email dengan format yang benar.",
-            },
+              message: "Masukkan email dengan format yang benar."
+            }
           }}
           render={({ field, fieldState }) => (
             <MainInput
@@ -81,7 +108,7 @@ const RegisterPage = () => {
             />
           )}
         />
-        
+
         <Controller
           name="password"
           control={control}
@@ -89,8 +116,8 @@ const RegisterPage = () => {
             required: "Kata sandi wajib diisi.",
             pattern: {
               value: /^.{8,}$/,
-              message: "Kata sandi minimal terdiri dari 8 karakter",
-            },
+              message: "Kata sandi minimal terdiri dari 8 karakter"
+            }
           }}
           render={({ field, fieldState }) => (
             <PasswordInput
@@ -108,7 +135,7 @@ const RegisterPage = () => {
           rules={{
             required: "Konfirmasi kata sandi.",
             validate: (value) =>
-              value === password || "Konfirmasi kata sandi belum sama",
+              value === password || "Konfirmasi kata sandi belum sama"
           }}
           render={({ field, fieldState }) => (
             <PasswordInput
@@ -138,7 +165,12 @@ const RegisterPage = () => {
             </small>
           </div>
         </div>
-        <Button type="submit" text="Daftar Akun" isDisabled={isLoading} isLoading={isLoading} />
+        <Button
+          type="submit"
+          text="Daftar Akun"
+          isDisabled={isLoading}
+          isLoading={isLoading}
+        />
         <span className="text-[0.9rem] text-center">
           Sudah punya akun?{" "}
           <Link className="text-primary hover:text-blue-300" to={"/login"}>
