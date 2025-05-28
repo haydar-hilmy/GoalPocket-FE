@@ -52,15 +52,7 @@ function App() {
         {
           path: "/profile",
           element: (
-            <ProfilePage
-              defaultData={{
-                name: "Jong Xina",
-                email: "jongxina@example.com",
-                phone: "82345432786",
-                address: "Jl Hamburg Briden Soyem",
-                country: "Indonesia",
-              }}
-            />
+            <ProfilePage />
           ),
         },
         {

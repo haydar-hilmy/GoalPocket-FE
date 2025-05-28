@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
 
-export const ProfilePage = ({ defaultData }) => {
+export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     handleSubmit,
