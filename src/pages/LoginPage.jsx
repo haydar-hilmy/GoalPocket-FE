@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MainInput, PasswordInput } from "../components/input/Input";
 import Toggle from "../components/toggle/Toggle";
 import AuthLayout from "../layouts/AuthLayout";
@@ -14,8 +14,20 @@ import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const { register, handleSubmit, control, setValue } = useForm({
-    mode: "onSubmit"
+    mode: "onSubmit",
   });
+
+  // Condition if token is not valid or something when use location.state
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.message) {
+      Swal.fire({
+        icon: "info",
+        title: "Informasi",
+        text: location.state.message,
+      });
+    }
+  }, [location.state]);
 
   const navigate = useNavigate();
 
@@ -25,7 +37,7 @@ const LoginPage = () => {
   const [miniAlertBox, setMiniAlertBox] = useState({
     isVisible: false,
     text: "",
-    type: "info"
+    type: "info",
   });
 
   useEffect(() => {
@@ -45,7 +57,7 @@ const LoginPage = () => {
     try {
       const response = await loginUser({
         email: data.email,
-        password: data.password
+        password: data.password,
       });
 
       if (!response.user) {
@@ -75,7 +87,7 @@ const LoginPage = () => {
         title: "Login Berhasil",
         text: `Selamat datang, ${name}!`,
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
 
       navigate("/");
@@ -83,14 +95,14 @@ const LoginPage = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal Login",
-        text: error.message
+        text: error.message,
       });
       console.error("Login error:", error.message);
 
       setMiniAlertBox({
         text: error.message,
         isVisible: true,
-        type: "danger"
+        type: "danger",
       });
     } finally {
       clearTimeout(timeoutId);
@@ -120,8 +132,8 @@ const LoginPage = () => {
             required: "Email wajib diisi.",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{1,}$/i,
-              message: "Masukkan email dengan format yang benar."
-            }
+              message: "Masukkan email dengan format yang benar.",
+            },
           }}
           render={({ field, fieldState }) => (
             <MainInput
@@ -137,7 +149,7 @@ const LoginPage = () => {
           name="password"
           control={control}
           rules={{
-            required: "Kata sandi wajib diisi."
+            required: "Kata sandi wajib diisi.",
           }}
           render={({ field, fieldState }) => (
             <PasswordInput

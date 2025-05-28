@@ -8,9 +8,15 @@ import AppLayout from "../../layouts/AppLayout";
 import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
+import { CONFIG } from "../../config/Config";
+import { useNavigate } from "react-router";
+import { jwtDecode } from "jwt-decode";
 
 export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     control,
@@ -23,10 +29,25 @@ export const ProfilePage = () => {
   });
 
   useEffect(() => {
-    if (defaultData) {
-      reset(defaultData);
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    if (!token) {
+      navigate("/login", {
+        state: { message: "Sesi Anda telah habis. Silakan login kembali." },
+      });
+      return;
     }
-  }, [defaultData, reset]);
+
+    try {
+      const decodedUserData = jwtDecode(token);
+      reset(decodedUserData);
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+      navigate("/login", {
+        state: { message: "Token tidak valid. Silakan login ulang." },
+      });
+    }
+  }, [reset, navigate]);
 
   const onSubmit = (data) => {
     setIsLoading(true);
