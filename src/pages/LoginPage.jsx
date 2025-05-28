@@ -47,7 +47,6 @@ const LoginPage = () => {
         email: data.email,
         password: data.password
       });
-      console.log("Response dari loginUser:", response);
 
       if (!response.user) {
         throw new Error(
