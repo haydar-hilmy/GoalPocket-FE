@@ -57,7 +57,7 @@ const ChangePasswordPage = () => {
   return (
     <AppLayout title="Ganti Password" page="Ganti Password">
       <form
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-5 bg-[#F5F5FC] p-5 rounded-md shadow-md"
         onSubmit={handleSubmit(onFormSubmit)}
       >
         <Controller

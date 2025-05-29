@@ -44,9 +44,10 @@ export const ProfilePage = () => {
   const onSubmit = async (data) => {
     setIsLoading(true);
 
-    const cleanedPhone = data.phoneNumber
-      .replace(/\s+/g, "")
-      .replace(/^(\+62|62)/, "0");
+    const cleanedPhone =
+      typeof data.phoneNumber === "string"
+        ? data.phoneNumber.replace(/\s+/g, "").replace(/^(\+62|62)/, "0")
+        : null;
 
     const cleanedData = {
       ...data,
@@ -85,7 +86,7 @@ export const ProfilePage = () => {
         <div className="w-full">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#F5F5FC] p-5 rounded-md flex flex-col gap-5"
+            className="bg-[#F5F5FC] p-5 rounded-md flex flex-col gap-5 shadow-md"
           >
             <Controller
               name="name"
@@ -111,7 +112,7 @@ export const ProfilePage = () => {
                   {...field}
                   minLen={1}
                   isDisabled={true}
-                  errorMsg={errors.name?.message}
+                  errorMsg={errors.email?.message}
                   placeholder="goalpocket@example.com"
                   text="Alamat Email"
                 />
@@ -120,9 +121,6 @@ export const ProfilePage = () => {
             <Controller
               name="phoneNumber"
               control={control}
-              rules={{
-                required: "Nomor HP wajib diisi",
-              }}
               render={({ field, fieldState }) => (
                 <PhoneNumberInput
                   {...field}
@@ -134,7 +132,6 @@ export const ProfilePage = () => {
             <Controller
               name="address"
               control={control}
-              rules={{ required: "Alamat wajib diisi" }} // opsional, sesuai kebutuhan validasi
               render={({ field, fieldState }) => (
                 <MainInput
                   {...field}
@@ -148,7 +145,6 @@ export const ProfilePage = () => {
             <Controller
               name="country"
               control={control}
-              rules={{ required: "Negara wajib diisi" }}
               render={({ field, fieldState }) => (
                 <CountrySearchSelectInput
                   name="country"
