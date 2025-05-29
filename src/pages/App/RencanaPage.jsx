@@ -11,7 +11,7 @@ const RencanaPage = () => {
             <div className="w-full flex flex-col items-end">
                 <Button onclick={() => setIsOpenFormModal(true)} variant={"py-1.5"} text={"Buat Rencana"} />
             </div>
-            <RencanaFormModal isShow={isOpenFormModal} onClose={() => setIsOpenFormModal(false)} />
+            <RencanaFormModal title="Buat Rencana" isShow={isOpenFormModal} onClose={() => setIsOpenFormModal(false)} />
         </AppLayout>
     );
 };

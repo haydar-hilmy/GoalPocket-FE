@@ -124,15 +124,39 @@ const RencanaFormModal = ({
             name="target"
             control={control}
             rules={{
-              required: "Target wajib diisi.",
+              required: "Nama target wajib diisi.",
             }}
             render={({ field, fieldState }) => (
               <MainInput
                 {...field}
                 autofocus={true}
                 errorMsg={fieldState.error?.message || ""}
-                placeholder="Contoh: Laptop"
+                placeholder="Contoh: Liburan ke Raja Ampat"
                 text="Target"
+              />
+            )}
+          />
+
+          <Controller
+            name="duration"
+            control={control}
+            rules={{
+              required: "Durasi menabung wajib diisi.",
+              validate: (value) =>
+                (!isNaN(value) && Number(value) > 0) ||
+                "Durasi harus berupa angka dan minimal 1 bulan",
+            }}
+            render={({ field, fieldState }) => (
+              <MainInput
+                {...field}
+                autofocus={true}
+                errorMsg={fieldState.error?.message || ""}
+                placeholder="Contoh: 6 untuk 6 bulan"
+                text="Durasi Menabung (dalam bulan)"
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(e);
+                }}
               />
             )}
           />
