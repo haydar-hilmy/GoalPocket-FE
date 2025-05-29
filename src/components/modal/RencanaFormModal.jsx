@@ -2,7 +2,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "../button/Button";
 import { Icon } from "../icons/icons";
 import { MainInput, RupiahInput } from "../input/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { CONFIG } from "../../config/Config";
 
 const RencanaFormModal = ({
   isShow = false,
@@ -10,13 +12,54 @@ const RencanaFormModal = ({
   onSubmit,
   title = "Modal Title",
 }) => {
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, getValues, reset } = useForm({
     mode: "onSubmit",
   });
 
   const [isModalShow, setIsModalShow] = useState(isShow);
 
+  useEffect(() => {
+    setIsModalShow(isShow);
+  }, [isShow]);
+
+  // FETCH DRAFT FORM RENCANA
+  useEffect(() => {
+    const storedDraftRencana = localStorage.getItem(CONFIG.DRAFT_RENCANA);
+
+    if (storedDraftRencana) {
+      try {
+        const parsedData = JSON.parse(storedDraftRencana);
+        if (parsedData) {
+          reset(parsedData);
+        }
+      } catch (error) {
+        console.error("Gagal parsing user data dari localStorage:", error);
+      }
+    }
+  }, [reset]);
+
   const [isBtnLoading, setIsBtnLoading] = useState(false);
+
+  const handleClose = () => {
+    const values = getValues();
+    const isAnyFieldFilled = Object.values(values).some(
+      (val) => val !== undefined && val !== null && val !== ""
+    );
+
+    setIsModalShow(false);
+
+    if (isAnyFieldFilled) {
+      toast.info("Data tersimpan sementara. Anda bisa lanjut nanti!", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+      localStorage.setItem(CONFIG.DRAFT_RENCANA, JSON.stringify(values));
+    } else {
+      localStorage.removeItem(CONFIG.DRAFT_RENCANA);
+    }
+
+    onClose?.();
+  };
 
   const onFormSubmit = (data) => {
     setIsBtnLoading(true);
@@ -51,14 +94,22 @@ const RencanaFormModal = ({
     bg-[rgba(0,0,0,0.3)]
     duration-200
     `}
+      onClick={() => handleClose()}
     >
-      <div className="bg-white p-8 w-11/12 rounded-md sm:w-4/6 md:w-1/2">
+      <div
+        className="bg-white p-8 w-11/12 rounded-md sm:w-4/6 md:w-1/2 shadow-md"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex flex-row items-center">
           <div className="flex-1 flex justify-start sm:justify-center">
             <h3 className="font-bold text-lg">{title}</h3>
           </div>
           <div>
-            <div onClick={() => setIsModalShow(prev => !prev)} className="p-2.5 cursor-pointer rounded-sm bg-white w-fit h-fit duration-75 hover:bg-gray-100">
+            <div
+              title="Tutup"
+              onClick={() => handleClose()}
+              className="p-2.5 cursor-pointer rounded-sm bg-white w-fit h-fit duration-75 hover:bg-gray-100"
+            >
               <Icon.Cross />
             </div>
           </div>
