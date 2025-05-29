@@ -61,7 +61,7 @@ const PasswordInput = ({
           placeholder={placeholder}
           type={visible ? "text" : "password"}
           disabled={isDisabled}
-          value={value} //  use value from RHF
+          value={value ?? ""} //  use value from RHF
           onChange={onChange} // use onChange from RHF
           onBlur={onBlur} // use onBlur from RHF
         />

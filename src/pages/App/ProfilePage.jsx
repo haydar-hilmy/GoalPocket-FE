@@ -10,6 +10,7 @@ import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
 import { CONFIG } from "../../config/Config";
 import { jwtDecode } from "jwt-decode";
+import { UpdateProfile } from "../../data/api";
 
 export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,24 +41,39 @@ export const ProfilePage = () => {
     }
   }, [reset]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setIsLoading(true);
-    const cleanedPhone = data.phone.replace(/\s+/g, "");
+
+    const cleanedPhone = data.phoneNumber
+      .replace(/\s+/g, "")
+      .replace(/^(\+62|62)/, "0");
 
     const cleanedData = {
       ...data,
-      phone: cleanedPhone,
+      phoneNumber: cleanedPhone,
     };
 
-    // console.log("Sending Data: ", cleanedData);
-    Swal.fire({
-      title: "Berhasil!",
-      text: "Data berhasil diubah.",
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-    setIsLoading(false);
+    try {
+      const result = await UpdateProfile(cleanedData);
+
+      localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(cleanedData));
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Data berhasil diubah.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.message || "Terjadi kesalahan saat mengubah data.",
+        icon: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -102,7 +118,7 @@ export const ProfilePage = () => {
               )}
             />
             <Controller
-              name="phone"
+              name="phoneNumber"
               control={control}
               rules={{
                 required: "Nomor HP wajib diisi",
@@ -141,7 +157,11 @@ export const ProfilePage = () => {
                 />
               )}
             />
-            <Button isLoading={isLoading} text={"Ubah Profil"} />
+            <Button
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              text={"Ubah Profil"}
+            />
           </form>
         </div>
       </div>

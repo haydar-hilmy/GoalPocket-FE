@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "../../components/button/Button";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { UpdatePassword } from "../../data/api";
 
 const ChangePasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,29 +23,35 @@ const ChangePasswordPage = () => {
 
   const newPassword = watch("newpassword");
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = async (data) => {
     setIsLoading(true);
 
-    // ENDPOINT: PUT /goalpocket/users/password
-
-    // send this to backend API
     const passwordUpdate = {
-      old_password: data.oldpassword,
-      new_password: data.newpassword,
+      oldPassword: data.oldpassword,
+      newPassword: data.newpassword,
     };
 
-    Swal.fire({
-      icon: "success",
-      title: "Password berhasil diganti",
-      text: "Silakan login kembali.",
-      confirmButtonText: "OK",
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    });
+    try {
+      const result = await UpdatePassword(passwordUpdate);
 
-    navigate("/logout");
-
-    setIsLoading(false);
+      Swal.fire({
+        icon: "success",
+        title: "Password berhasil diganti",
+        text: "Silakan login kembali.",
+        confirmButtonText: "OK",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+      navigate("/logout");
+    } catch (error) {
+      Swal.fire({
+        title: "Kata sandi salah",
+        text: "Silakan coba lagi",
+        icon: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
