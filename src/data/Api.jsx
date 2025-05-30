@@ -108,15 +108,17 @@ export const UpdatePassword = async ({ oldPassword, newPassword }) => {
   }
 };
 
-
 export const RecoveryPassword = async ({ email }) => {
   try {
-    const response = await fetch(`${CONFIG.BASE_URL}/goalpocket/users/password/forgot`, {
-      method: "POST",
-      body: JSON.stringify({
-        email: email
-      }),
-    });
+    const response = await fetch(
+      `${CONFIG.BASE_URL}/goalpocket/users/password/forgot`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+        }),
+      }
+    );
 
     const result = await response.json();
 
@@ -130,4 +132,33 @@ export const RecoveryPassword = async ({ email }) => {
   } catch (error) {
     throw new Error(error.message || "Internal server error");
   }
-}
+};
+
+export const PostTarget = async (dataTarget) => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    console.log(dataTarget)
+
+    const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(dataTarget),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.message || result.error || "Rencana failed to add"
+      );
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(error.message || "Internal server error");
+  }
+};

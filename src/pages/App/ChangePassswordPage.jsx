@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "../../components/button/Button";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import { UpdatePassword } from "../../data/api";
+import { UpdatePassword } from "../../data/Api";
 
 const ChangePasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);

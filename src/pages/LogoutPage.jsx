@@ -11,7 +11,7 @@ export const LogoutPage = () => {
   useEffect(() => {
     localStorage.removeItem(CONFIG.LS_KEY);
     localStorage.removeItem(CONFIG.LS_USERDATA);
-    localStorage.removeItem(CONFIG.DRAFT_RENCANA);
+    sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
 
     setIsLoggedIn(false)
     

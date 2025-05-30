@@ -1,10 +1,12 @@
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "../button/Button";
 import { Icon } from "../icons/icons";
-import { MainInput, RupiahInput } from "../input/Input";
+import { DropDownInput, MainInput, RupiahInput } from "../input/Input";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { CONFIG } from "../../config/Config";
+import { PostTarget } from "../../data/Api";
+import Swal from "sweetalert2";
 
 const RencanaFormModal = ({
   isShow = false,
@@ -12,10 +14,11 @@ const RencanaFormModal = ({
   onSubmit,
   title = "Modal Title",
 }) => {
-  const { handleSubmit, control, getValues, reset } = useForm({
+  const { handleSubmit, control, getValues, reset, watch } = useForm({
     mode: "onSubmit",
   });
 
+  const selectedFreq = useWatch({ control, name: "incomeFrequency" });
   const [isModalShow, setIsModalShow] = useState(isShow);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const RencanaFormModal = ({
 
   // FETCH DRAFT FORM RENCANA
   useEffect(() => {
-    const storedDraftRencana = localStorage.getItem(CONFIG.DRAFT_RENCANA);
+    const storedDraftRencana = sessionStorage.getItem(CONFIG.DRAFT_RENCANA);
 
     if (storedDraftRencana) {
       try {
@@ -53,27 +56,48 @@ const RencanaFormModal = ({
         position: "bottom-right",
         autoClose: 2000,
       });
-      localStorage.setItem(CONFIG.DRAFT_RENCANA, JSON.stringify(values));
+      sessionStorage.setItem(CONFIG.DRAFT_RENCANA, JSON.stringify(values));
     } else {
-      localStorage.removeItem(CONFIG.DRAFT_RENCANA);
+      sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
     }
 
     onClose?.();
   };
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = async (data) => {
     setIsBtnLoading(true);
 
-    // Fetch API (....) belum ada dokumentasi dari Backend (27 Mei)
-    const dataRencana = {
-      target: data?.target ?? "",
-      harga: data?.harga ?? 0,
-      tabungan_awal: data?.tabungan_awal ?? 0,
-      pemasukan: data?.pemasukan ?? 0,
-      pengeluaran: data?.pengeluaran ?? 0,
+    const dataTarget = {
+      name: data?.target ?? "",
+      duration: `${data?.duration ?? 0} ${
+        data?.incomeFrequency === "yearly" ? "tahun" : "bulan"
+      }`,
+      initialSaving: Number(data?.initialSaving ?? 0),
+      incomeFrequency: data?.incomeFrequency ?? "monthly",
+      fixedIncome: Number(data?.fixedIncome ?? 0),
+      isCompleted: false,
+      targetAmount: Number(data?.targetAmount ?? 0),
     };
-    console.log("Sending Rencana: ", dataRencana);
-    setIsBtnLoading(false);
+
+    try {
+      const result = await PostTarget(dataTarget);
+
+      Swal.fire({
+        icon: "success",
+        title: "Rencana Tersimpan",
+        text: "Rencana menabung berhasil ditambahkan.",
+        confirmButtonText: "OK",
+        allowEscapeKey: true,
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Gagal Menyimpan Rencana",
+        text: "Terjadi kesalahan saat menyimpan rencana. Silakan coba lagi.",
+        icon: "error",
+      });
+    } finally {
+      setIsBtnLoading(false);
+    }
   };
 
   return (
@@ -138,21 +162,46 @@ const RencanaFormModal = ({
           />
 
           <Controller
+            name="incomeFrequency"
+            control={control}
+            rules={{ required: "Wajib memilih salah satu opsi frekuensi." }}
+            render={({ field, fieldState }) => (
+              <DropDownInput
+                {...field}
+                hook_form={field}
+                text="Frekuensi Pemasukan"
+                placeholder="Pilih frekuensi pemasukan"
+                errorMsg={fieldState.error?.message || ""}
+                options={[
+                  { value: "yearly", label: "Tahunan" },
+                  { value: "monthly", label: "Bulanan" },
+                ]}
+              />
+            )}
+          />
+
+          <Controller
             name="duration"
             control={control}
             rules={{
               required: "Durasi menabung wajib diisi.",
               validate: (value) =>
                 (!isNaN(value) && Number(value) > 0) ||
-                "Durasi harus berupa angka dan minimal 1 bulan",
+                `Durasi harus berupa angka dan minimal 1 ${
+                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                }`,
             }}
             render={({ field, fieldState }) => (
               <MainInput
                 {...field}
                 autofocus={true}
                 errorMsg={fieldState.error?.message || ""}
-                placeholder="Contoh: 6 untuk 6 bulan"
-                text="Durasi Menabung (dalam bulan)"
+                placeholder={`Misal: 6 untuk 6 ${
+                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                }`}
+                text={`Durasi Menabung (dalam ${
+                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                })`}
                 onInput={(e) => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
                   field.onChange(e);
@@ -162,7 +211,7 @@ const RencanaFormModal = ({
           />
 
           <Controller
-            name="tabungan_awal"
+            name="initialSaving"
             control={control}
             rules={{
               required: "Tabungan awal wajib diisi.",
@@ -170,11 +219,11 @@ const RencanaFormModal = ({
             render={({ field, fieldState }) => (
               <>
                 <RupiahInput
-                  name="tabungan_awal"
+                  name="initialSavibf"
                   text="Tabungan Awal"
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Rp 4.000.000"
+                  placeholder="Misal: Rp 4.000.000"
                   errorMsg={fieldState.error?.message || ""}
                 />
               </>
@@ -182,19 +231,21 @@ const RencanaFormModal = ({
           />
 
           <Controller
-            name="harga"
+            name="fixedIncome"
             control={control}
             rules={{
-              required: "Harga wajib diisi.",
+              required: "Pemasukan tetap wajib diisi.",
             }}
             render={({ field, fieldState }) => (
               <>
                 <RupiahInput
-                  name="harga"
-                  text="Harga"
+                  name="fixedIncome"
+                  text={`Pemasukan Tetap (per ${
+                    selectedFreq == "yearly" ? "tahun" : "bulan"
+                  })`}
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Rp 4.000.000"
+                  placeholder="Misal: Rp 4.000.000"
                   errorMsg={fieldState.error?.message || ""}
                 />
               </>
@@ -202,39 +253,19 @@ const RencanaFormModal = ({
           />
 
           <Controller
-            name="pemasukan"
+            name="targetAmount"
             control={control}
             rules={{
-              required: "Pemasukan wajib diisi.",
+              required: "Jumlah target wajib diisi.",
             }}
             render={({ field, fieldState }) => (
               <>
                 <RupiahInput
-                  name="pemasukan"
-                  text="Pemasukan"
+                  name="targetAmount"
+                  text="Jumlah Target"
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Rp 4.000.000"
-                  errorMsg={fieldState.error?.message || ""}
-                />
-              </>
-            )}
-          />
-
-          <Controller
-            name="pengeluaran"
-            control={control}
-            rules={{
-              required: "Pengeluaran tetap wajib diisi.",
-            }}
-            render={({ field, fieldState }) => (
-              <>
-                <RupiahInput
-                  name="pengeluaran"
-                  text="Pengeluaran Tetap"
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Rp 4.000.000"
+                  placeholder="Misal: Rp 4.000.000"
                   errorMsg={fieldState.error?.message || ""}
                 />
               </>
