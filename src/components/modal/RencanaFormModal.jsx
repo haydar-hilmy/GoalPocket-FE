@@ -14,7 +14,7 @@ const RencanaFormModal = ({
   onSubmit,
   title = "Modal Title",
 }) => {
-  const { handleSubmit, control, getValues, reset, watch } = useForm({
+  const { handleSubmit, control, getValues, reset, watch, setFocus } = useForm({
     mode: "onSubmit",
   });
 
@@ -89,10 +89,21 @@ const RencanaFormModal = ({
         confirmButtonText: "OK",
         allowEscapeKey: true,
       });
+
+      reset();
+      sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
+      handleClose();
     } catch (error) {
+      const errorMsg =
+        error.message || "Terjadi kesalahan saat menyimpan rencana.";
+
+      if (errorMsg.includes("name") || errorMsg.includes("Name") || errorMsg.includes("target")) {
+        setFocus("target");
+      }
+
       Swal.fire({
         title: "Gagal Menyimpan Rencana",
-        text: "Terjadi kesalahan saat menyimpan rencana. Silakan coba lagi.",
+        text: errorMsg,
         icon: "error",
       });
     } finally {
@@ -156,7 +167,7 @@ const RencanaFormModal = ({
                 autofocus={true}
                 errorMsg={fieldState.error?.message || ""}
                 placeholder="Contoh: Liburan ke Raja Ampat"
-                text="Target"
+                text="Nama Rencana"
               />
             )}
           />

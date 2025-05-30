@@ -138,7 +138,7 @@ export const PostTarget = async (dataTarget) => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
 
-    console.log(dataTarget)
+    console.log(dataTarget);
 
     const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
       method: "POST",
@@ -152,9 +152,17 @@ export const PostTarget = async (dataTarget) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        result.message || result.error || "Rencana failed to add"
-      );
+      const message = result?.message || result?.error;
+
+      if (
+        message?.includes("Unique constraint failed on the fields: (`name`)")
+      ) {
+        throw new Error(
+          "Nama rencana sudah digunakan. Silakan pilih nama lain."
+        );
+      }
+
+      throw new Error(message || "Rencana gagal ditambahkan");
     }
 
     return result;
