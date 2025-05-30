@@ -331,6 +331,56 @@ const PhoneNumberInput = ({
   );
 };
 
+
+
+const DropDownInput = ({
+  name = "dropdown",
+  text = "Pilihan",
+  errorMsg = "",
+  placeholder = "Pilih salah satu...",
+  hook_form,
+  isDisabled = false,
+  options = [],
+  onChange,
+}) => {
+  return (
+    <div className="form-control flex flex-col gap-1 w-full">
+      <label className="font-bold text-[0.9rem] w-fit" htmlFor={name}>
+        {text}
+      </label>
+
+      <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
+        <div className="w-full border-none border-0 outline-none px-5 py-[0.35rem]">
+          <Select
+            id={name}
+            name={name}
+            options={options}
+            isDisabled={isDisabled}
+            placeholder={placeholder}
+            value={
+              options.find((opt) => opt.value === hook_form?.value) || null
+            }
+            onChange={(selectedOption) => {
+              onChange?.({ target: { name, value: selectedOption?.value } });
+              if (hook_form?.onChange) {
+                hook_form.onChange({
+                  target: { value: selectedOption?.value },
+                });
+              }
+            }}
+            classNamePrefix="react-select"
+            isSearchable
+          />
+        </div>
+      </FieldInput>
+
+      <small className="text-red-500 text-[0.8rem] ml-[20px]">{errorMsg}</small>
+    </div>
+  );
+};
+
+
+
 countries.registerLocale(enLocale);
 
 const CountrySearchSelectInput = ({
@@ -396,4 +446,5 @@ export {
   PhoneNumberInput,
   CountrySearchSelectInput,
   RupiahInput,
+  DropDownInput,
 };

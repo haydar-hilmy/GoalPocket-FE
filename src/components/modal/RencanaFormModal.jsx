@@ -162,26 +162,6 @@ const RencanaFormModal = ({
           />
 
           <Controller
-            name="harga"
-            control={control}
-            rules={{
-              required: "Harga wajib diisi.",
-            }}
-            render={({ field, fieldState }) => (
-              <>
-                <RupiahInput
-                  name="harga"
-                  text="Harga"
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Rp 4.000.000"
-                  errorMsg={fieldState.error?.message || ""}
-                />
-              </>
-            )}
-          />
-
-          <Controller
             name="tabungan_awal"
             control={control}
             rules={{
@@ -192,6 +172,26 @@ const RencanaFormModal = ({
                 <RupiahInput
                   name="tabungan_awal"
                   text="Tabungan Awal"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Rp 4.000.000"
+                  errorMsg={fieldState.error?.message || ""}
+                />
+              </>
+            )}
+          />
+
+          <Controller
+            name="harga"
+            control={control}
+            rules={{
+              required: "Harga wajib diisi.",
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <RupiahInput
+                  name="harga"
+                  text="Harga"
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Rp 4.000.000"
