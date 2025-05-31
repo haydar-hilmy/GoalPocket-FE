@@ -5,7 +5,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
-import { registerUser } from "../data/api";
+import { registerUser } from "../data/Api";
 import Swal from "sweetalert2";
 
 const RegisterPage = () => {

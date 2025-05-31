@@ -5,7 +5,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import { Button } from "../components/button/Button";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { RecoveryPassword } from "../data/api";
+import { RecoveryPassword } from "../data/Api";
 import Swal from "sweetalert2";
 
 const RecoveryPage = () => {

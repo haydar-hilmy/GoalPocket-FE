@@ -12,6 +12,7 @@ const RencanaPage = () => {
                 <Button onclick={() => setIsOpenFormModal(true)} variant={"py-1.5"} text={"Buat Rencana"} />
             </div>
             <RencanaFormModal title="Buat Rencana" isShow={isOpenFormModal} onClose={() => setIsOpenFormModal(false)} />
+
         </AppLayout>
     );
 };

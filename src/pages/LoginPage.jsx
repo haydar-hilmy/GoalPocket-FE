@@ -9,7 +9,7 @@ import { Close } from "@mui/icons-material";
 import { MiniAlertBox } from "../components/alertBox/alertBox";
 import { AuthContext } from "../context/AuthContext";
 import { CONFIG } from "../config/Config";
-import { loginUser } from "../data/api";
+import { loginUser } from "../data/Api";
 import Swal from "sweetalert2";
 
 const LoginPage = () => {

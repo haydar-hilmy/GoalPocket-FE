@@ -10,7 +10,7 @@ import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
 import { CONFIG } from "../../config/Config";
 import { jwtDecode } from "jwt-decode";
-import { UpdateProfile } from "../../data/api";
+import { UpdateProfile } from "../../data/Api";
 
 export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
