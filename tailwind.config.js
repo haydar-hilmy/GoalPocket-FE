@@ -12,7 +12,7 @@ export default {
       colors: {
         bg_base: "#F6F6FD",
         text_dark: "#1F2B3A",
-        primary_text: "#3A1078",
+        primary_text: "#4d11a5",
         primary: "#0087FF",
         warning: "#FF0004"
       },
