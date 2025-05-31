@@ -1,4 +1,4 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { SendOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import PasswordStrengthBar from "../barLevel/passwordStrengthBar";
 import { Button } from "../button/Button";
@@ -188,7 +188,7 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
         />
 
         <div className="w-full sm:w-auto">
-          <Button text="Kirim" type="Submit" variant="px-6 w-full" />
+          <Button text="Kirim" type="Submit" variant="px-6 w-full"><SendOutlined /></Button>
         </div>
       </div>
     </form>

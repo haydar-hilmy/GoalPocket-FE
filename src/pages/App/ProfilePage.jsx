@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { CONFIG } from "../../config/Config";
 import { jwtDecode } from "jwt-decode";
 import { UpdateProfile } from "../../data/Api";
+import { BorderColor, DriveFileRenameOutlineOutlined } from "@mui/icons-material";
 
 export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -157,7 +158,7 @@ export const ProfilePage = () => {
               isDisabled={isLoading}
               isLoading={isLoading}
               text={"Ubah Profil"}
-            />
+            ><DriveFileRenameOutlineOutlined /></Button>
           </form>
         </div>
       </div>

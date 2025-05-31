@@ -2,6 +2,7 @@ import { Button } from "../../components/button/Button";
 import AppLayout from "../../layouts/AppLayout";
 import { useState } from "react";
 import RencanaFormModal from "../../components/modal/RencanaFormModal";
+import { EventNoteOutlined } from "@mui/icons-material";
 
 const RencanaPage = () => {
     const [isOpenFormModal, setIsOpenFormModal] = useState(false);
@@ -9,7 +10,7 @@ const RencanaPage = () => {
     return (
         <AppLayout page="Rencana Penabungan" subtitle="Investment Plan" title="Rencana Penabungan">
             <div className="w-full flex flex-col items-end">
-                <Button onclick={() => setIsOpenFormModal(true)} variant={"py-1.5"} text={"Buat Rencana"} />
+                <Button onclick={() => setIsOpenFormModal(true)} variant={"py-1.5"} text={"Buat Rencana"}><EventNoteOutlined /></Button>
             </div>
             <RencanaFormModal title="Buat Rencana" isShow={isOpenFormModal} onClose={() => setIsOpenFormModal(false)} />
 
