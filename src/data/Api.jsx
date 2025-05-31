@@ -138,8 +138,6 @@ export const PostTarget = async (dataTarget) => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
 
-    console.log(dataTarget);
-
     const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
       method: "POST",
       headers: {

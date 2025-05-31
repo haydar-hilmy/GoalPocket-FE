@@ -19,6 +19,13 @@ const RencanaFormModal = ({
   });
 
   const selectedFreq = useWatch({ control, name: "incomeFrequency" });
+  const freqLabelMap = {
+    daily: "hari",
+    weekly: "minggu",
+    monthly: "bulan",
+    yearly: "tahun",
+  };
+
   const [isModalShow, setIsModalShow] = useState(isShow);
 
   useEffect(() => {
@@ -65,12 +72,13 @@ const RencanaFormModal = ({
   };
 
   const onFormSubmit = async (data) => {
+    setFocus("target");
     setIsBtnLoading(true);
 
     const dataTarget = {
       name: data?.target ?? "",
       duration: `${data?.duration ?? 0} ${
-        data?.incomeFrequency === "yearly" ? "tahun" : "bulan"
+        freqLabelMap[data?.incomeFrequency] ?? ""
       }`,
       initialSaving: Number(data?.initialSaving ?? 0),
       incomeFrequency: data?.incomeFrequency ?? "monthly",
@@ -97,7 +105,12 @@ const RencanaFormModal = ({
       const errorMsg =
         error.message || "Terjadi kesalahan saat menyimpan rencana.";
 
-      if (errorMsg.includes("name") || errorMsg.includes("Name") || errorMsg.includes("target")) {
+      const lowerMsg = errorMsg.toLowerCase();
+      if (
+        lowerMsg.includes("name") ||
+        lowerMsg.includes("nama") ||
+        lowerMsg.includes("target")
+      ) {
         setFocus("target");
       }
 
@@ -184,8 +197,9 @@ const RencanaFormModal = ({
                 placeholder="Pilih frekuensi pemasukan"
                 errorMsg={fieldState.error?.message || ""}
                 options={[
-                  { value: "yearly", label: "Tahunan" },
                   { value: "monthly", label: "Bulanan" },
+                  { value: "weekly", label: "Mingguan" },
+                  { value: "daily", label: "Harian" },
                 ]}
               />
             )}
@@ -199,7 +213,7 @@ const RencanaFormModal = ({
               validate: (value) =>
                 (!isNaN(value) && Number(value) > 0) ||
                 `Durasi harus berupa angka dan minimal 1 ${
-                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                  freqLabelMap[selectedFreq] || "frekuensi"
                 }`,
             }}
             render={({ field, fieldState }) => (
@@ -208,10 +222,10 @@ const RencanaFormModal = ({
                 autofocus={true}
                 errorMsg={fieldState.error?.message || ""}
                 placeholder={`Misal: 6 untuk 6 ${
-                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                  freqLabelMap[selectedFreq] || "frekuensi"
                 }`}
                 text={`Durasi Menabung (dalam ${
-                  selectedFreq === "yearly" ? "tahun" : "bulan"
+                  freqLabelMap[selectedFreq] || "frekuensi"
                 })`}
                 onInput={(e) => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
@@ -230,7 +244,7 @@ const RencanaFormModal = ({
             render={({ field, fieldState }) => (
               <>
                 <RupiahInput
-                  name="initialSavibf"
+                  name="initialSaving"
                   text="Tabungan Awal"
                   value={field.value}
                   onChange={field.onChange}
@@ -252,7 +266,7 @@ const RencanaFormModal = ({
                 <RupiahInput
                   name="fixedIncome"
                   text={`Pemasukan Tetap (per ${
-                    selectedFreq == "yearly" ? "tahun" : "bulan"
+                    freqLabelMap[selectedFreq] || "frekuensi"
                   })`}
                   value={field.value}
                   onChange={field.onChange}
