@@ -168,3 +168,28 @@ export const PostTarget = async (dataTarget) => {
     throw new Error(error.message || "Internal server error");
   }
 };
+
+export const GetAllTargets = async () => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const message = result?.message || result?.error || "Gagal mengambil data target.";
+      throw new Error(message);
+    }
+
+    return result; 
+  } catch (error) {
+    throw new Error(error.message || "Terjadi kesalahan saat mengambil data target.");
+  }
+}
+
