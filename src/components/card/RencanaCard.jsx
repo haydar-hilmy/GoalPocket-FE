@@ -12,7 +12,7 @@ import { ActionButton } from "../button/ActionButton";
 import { formatRupiah } from "../../utils/FormatRupiah";
 
 export const RencanaCardContainer = ({ children }) => {
-  return <div className="grid grid-cols-4 gap-5 mt-5">{children}</div>;
+  return <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">{children}</div>;
 };
 
 const Item = ({ icon, label = "Label", value = "Value" }) => {

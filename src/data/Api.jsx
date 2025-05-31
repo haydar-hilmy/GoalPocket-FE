@@ -138,8 +138,6 @@ export const PostTarget = async (dataTarget) => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
 
-    console.log(dataTarget)
-
     const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
       method: "POST",
       headers: {
@@ -153,8 +151,6 @@ export const PostTarget = async (dataTarget) => {
 
     if (!response.ok) {
       const message = result?.message || result?.error;
-      console.log("Result", message)
-
       if (
         message?.includes("Unique constraint failed on the fields: (`name`)")
       ) {
@@ -172,6 +168,43 @@ export const PostTarget = async (dataTarget) => {
     throw new Error(error.message || "Internal server error");
   }
 };
+
+export const UpdateTarget = async (id, dataTarget) => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/targets/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(dataTarget),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const message = result?.message || result?.error;
+
+      if (
+        message?.includes("Unique constraint failed on the fields: (`name`)")
+      ) {
+        throw new Error(
+          "Nama rencana sudah digunakan. Silakan pilih nama lain."
+        );
+      }
+
+      throw new Error(message || "Rencana gagal diperbarui");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Update Error:", error);
+    throw new Error(error.message || "Terjadi kesalahan saat mengubah data.");
+  }
+};
+
 
 export const GetAllTargets = async () => {
   try {

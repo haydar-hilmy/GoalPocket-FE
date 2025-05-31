@@ -82,6 +82,7 @@ const RencanaFormModal = ({
       initialSaving: Number(data?.initialSaving ?? 0),
       incomeFrequency: data?.incomeFrequency ?? "monthly",
       fixedIncome: Number(data?.fixedIncome ?? 0),
+      fixedIncome: Number(data?.fixedOutcome ?? 0),
       isCompleted: false,
       targetAmount: Number(data?.targetAmount ?? 0),
     };
@@ -308,6 +309,28 @@ const RencanaFormModal = ({
                 <RupiahInput
                   name="fixedIncome"
                   text={`Pemasukan Tetap (per ${
+                    freqLabelMap[selectedFreq] || "frekuensi"
+                  })`}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Misal: Rp 4.000.000"
+                  errorMsg={fieldState.error?.message || ""}
+                />
+              </>
+            )}
+          />
+
+          <Controller
+            name="fixedOutcome"
+            control={control}
+            rules={{
+              required: "Pengeluaran tetap wajib diisi.",
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <RupiahInput
+                  name="fixedOutcome"
+                  text={`Pengeluaran Tetap (per ${
                     freqLabelMap[selectedFreq] || "frekuensi"
                   })`}
                   value={field.value}
