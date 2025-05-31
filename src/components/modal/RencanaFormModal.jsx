@@ -5,9 +5,10 @@ import { DropDownInput, MainInput, RupiahInput } from "../input/Input";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { CONFIG } from "../../config/Config";
-import { DeleteTargetById, PostTarget } from "../../data/Api";
+import { DeleteTargetById, PostTarget, UpdateTarget } from "../../data/Api";
 import Swal from "sweetalert2";
 import { duration } from "@mui/material";
+import { ParseDuration } from "../../utils/ParseDuration";
 
 const RencanaFormModal = ({
   isShow = false,
@@ -39,15 +40,9 @@ const RencanaFormModal = ({
 
   // FETCH FORM
   useEffect(() => {
-    // duration: "2 bulan" to duration: 2
-    const durationMatch = initialData.duration?.match(/\d+/);
-    const numericDuration = durationMatch ? parseInt(durationMatch[0], 10) : 0;
-
-    console.log("Initial Data")
-
     const parsedInitialData = {
       ...initialData,
-      duration: numericDuration,
+      duration: ParseDuration(initialData.duration),
     };
 
     reset(parsedInitialData);
@@ -118,13 +113,12 @@ const RencanaFormModal = ({
       });
 
       reset();
-      sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
       if (onSuccess) onSuccess();
       handleClose();
     } catch (error) {
       const errorMsg =
-        error.message || "Terjadi kesalahan saat menyimpan rencana.";
-
+      error.message || "Terjadi kesalahan saat menyimpan rencana.";
+      
       const lowerMsg = errorMsg.toLowerCase();
       if (
         lowerMsg.includes("name") ||
@@ -133,13 +127,14 @@ const RencanaFormModal = ({
       ) {
         setFocus("target");
       }
-
+      
       Swal.fire({
         title: "Gagal Menyimpan Rencana",
         text: errorMsg,
         icon: "error",
       });
     } finally {
+      sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
       setIsBtnLoading(false);
     }
   };
