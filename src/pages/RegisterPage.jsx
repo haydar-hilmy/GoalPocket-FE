@@ -153,7 +153,7 @@ const RegisterPage = () => {
               hook_form={register("isAgree", { required: "Harus setuju" })}
               name="isAgree"
             />
-            <small className="text-[0.9rem]" style={{ lineHeight: "100%" }}>
+            <small className="text-[0.9rem]" style={{ lineHeight: "150%" }}>
               Saya setuju dengan{" "}
               <Link to="#" className="text-primary hover:text-blue-300">
                 Kebijakan privasi

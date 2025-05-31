@@ -100,7 +100,6 @@ export const ProfilePage = () => {
                   errorMsg={errors.name?.message}
                   placeholder="misal: John Doe"
                   text="Nama"
-                  autofocus={true}
                 />
               )}
             />
