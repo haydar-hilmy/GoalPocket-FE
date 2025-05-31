@@ -138,6 +138,8 @@ export const PostTarget = async (dataTarget) => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
 
+    console.log(dataTarget)
+
     const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
       method: "POST",
       headers: {
@@ -151,6 +153,7 @@ export const PostTarget = async (dataTarget) => {
 
     if (!response.ok) {
       const message = result?.message || result?.error;
+      console.log("Result", message)
 
       if (
         message?.includes("Unique constraint failed on the fields: (`name`)")
@@ -160,11 +163,12 @@ export const PostTarget = async (dataTarget) => {
         );
       }
 
+      
       throw new Error(message || "Rencana gagal ditambahkan");
     }
-
     return result;
   } catch (error) {
+    console.error("Error: ", error)
     throw new Error(error.message || "Internal server error");
   }
 };
@@ -193,3 +197,27 @@ export const GetAllTargets = async () => {
   }
 }
 
+export const DeleteTargetById = async (id) => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+    const response = await fetch(`${CONFIG.BASE_URL}/targets/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const message = result?.message || result?.error || "Gagal menghapus rencana.";
+      throw new Error(message);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Delete Error:", error);
+    throw new Error(error.message || "Terjadi kesalahan saat menghapus.");
+  }
+};

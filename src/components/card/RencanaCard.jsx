@@ -4,11 +4,16 @@ import {
   DateRangeOutlined,
   HourglassBottomOutlined,
   SavingsOutlined,
+  TrendingDownOutlined,
   TrendingUpOutlined,
 } from "@mui/icons-material";
 import { Line } from "../line/Line";
 import { ActionButton } from "../button/ActionButton";
 import { formatRupiah } from "../../utils/FormatRupiah";
+
+export const RencanaCardContainer = ({ children }) => {
+  return <div className="grid grid-cols-4 gap-5 mt-5">{children}</div>;
+};
 
 const Item = ({ icon, label = "Label", value = "Value" }) => {
   return (
@@ -29,29 +34,29 @@ export const RencanaCard = ({ data, onEdit }) => {
       <Line />
       <div className="flex flex-col gap-4">
         <Item
-          icon={<DateRangeOutlined color="inherit" />}
-          label="Tercapai Dalam"
-          value="2 Tahun"
-        />
-        <Item
           icon={<HourglassBottomOutlined color="inherit" />}
           label="Durasi Menabung"
-          value={data.duration}
+          value={data?.duration || "-"}
         />
         <Item
           icon={<SavingsOutlined color="inherit" />}
           label="Tabungan Awal"
-          value={formatRupiah(data.initialSaving)}
+          value={formatRupiah(data?.initialSaving ?? 0)}
         />
         <Item
           icon={<TrendingUpOutlined color="inherit" />}
           label="Pemasukan Tetap"
-          value={formatRupiah(data.fixedIncome)}
+          value={formatRupiah(data?.fixedIncome ?? 0)}
+        />
+        <Item
+          icon={<TrendingDownOutlined color="inherit" />}
+          label="Pengeluaran Tetap"
+          value={formatRupiah(data?.fixedOutcome ?? 0)}
         />
         <Item
           icon={<AdsClickOutlined color="inherit" />}
           label="Target Tercapai"
-          value={formatRupiah(data.targetAmount)}
+          value={formatRupiah(data?.targetAmount ?? 0)}
         />
       </div>
       <Line />
@@ -59,6 +64,43 @@ export const RencanaCard = ({ data, onEdit }) => {
         <BorderColorOutlined fontSize="inherit" /> Ubah
       </ActionButton>
     </div>
+  );
+};
+
+export const RencanaCardLoading = ({ cardTotal = 4, isShow = false }) => {
+  return (
+    <>
+      {Array(cardTotal)
+        .fill(0)
+        .map((_, index) => (
+          <div
+            key={index}
+            className="bg-white min-w-60 w-auto px-6 py-4 rounded-lg shadow-md flex flex-col gap-3 justify-between"
+          >
+            <div className="h-6 w-3/4 rounded bg-gray-200 shimmer" />
+
+            <div className="border-t border-gray-200 my-2" />
+
+            <div className="flex flex-col gap-4">
+              {Array(5)
+                .fill(0)
+                .map((_, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded bg-gray-200 shimmer" />
+                    <div className="flex flex-col gap-1 w-full">
+                      <div className="h-3 w-1/2 rounded bg-gray-200 shimmer" />
+                      <div className="h-4 w-3/4 rounded bg-gray-200 shimmer" />
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            <div className="border-t border-gray-200 my-2" />
+
+            <div className="h-9 w-1/3 rounded bg-gray-200 shimmer self-start" />
+          </div>
+        ))}
+    </>
   );
 };
 

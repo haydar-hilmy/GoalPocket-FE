@@ -1,15 +1,23 @@
 import { Button } from "../../components/button/Button";
 import AppLayout from "../../layouts/AppLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RencanaFormModal from "../../components/modal/RencanaFormModal";
 import { EventNoteOutlined } from "@mui/icons-material";
-import { RencanaCard } from "../../components/card/RencanaCard";
+import {
+  RencanaCard,
+  RencanaCardContainer,
+  RencanaCardLoading,
+} from "../../components/card/RencanaCard";
 import { CONFIG } from "../../config/Config";
+import Swal from "sweetalert2";
+import { GetAllTargets } from "../../data/Api";
 
 const RencanaPage = () => {
   const [isOpenFormModal, setIsOpenFormModal] = useState(false);
   const [formData, setFormData] = useState({});
   const [formMode, setFormMode] = useState("create");
+  const [rencanaList, setRencanaList] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   const handleCreate = () => {
     sessionStorage.removeItem(CONFIG.EDIT_RENCANA);
@@ -28,48 +36,25 @@ const RencanaPage = () => {
     setIsOpenFormModal(true);
   };
 
-  const rencanaList = [
-    {
-      name: "Ikut Seminar di Konoha",
-      targetAmount: 8000000,
-      duration: "6 bulan",
-      initialSaving: 2000000,
-      incomeFrequency: "monthly",
-      fixedIncome: 500000,
-    },
-    {
-      name: "Liburan ke Jepang",
-      targetAmount: 15000000,
-      duration: "12 bulan",
-      initialSaving: 1000000,
-      incomeFrequency: "monthly",
-      fixedIncome: 1000000,
-    },
-    {
-      name: "Beli Laptop Baru",
-      targetAmount: 10000000,
-      duration: "4 bulan",
-      initialSaving: 2500000,
-      incomeFrequency: "monthly",
-      fixedIncome: 750000,
-    },
-    {
-      name: "Beli Laptop Baru",
-      targetAmount: 10000000,
-      duration: "4 bulan",
-      initialSaving: 2500000,
-      incomeFrequency: "monthly",
-      fixedIncome: 750000,
-    },
-    {
-      name: "Beli Laptop Baru",
-      targetAmount: 10000000,
-      duration: "4 bulan",
-      initialSaving: 2500000,
-      incomeFrequency: "monthly",
-      fixedIncome: 750000,
-    },
-  ];
+  const fetchTargets = async () => {
+    try {
+      setLoading(true);
+      const targets = await GetAllTargets();
+      setRencanaList(targets);
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Mengambil Data",
+        text: err.message || "Terjadi kesalahan saat mengambil data rencana.",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchTargets();
+  }, []);
 
   return (
     <AppLayout
@@ -88,18 +73,23 @@ const RencanaPage = () => {
         initialData={formData}
         mode={formMode}
         onClose={() => setIsOpenFormModal(false)}
+        onSuccess={fetchTargets}
       />
 
       {/* RENCANA CARDs */}
-      <div className="grid grid-cols-4 gap-5 mt-5">
-        {rencanaList.map((item, index) => (
-          <RencanaCard
-            key={index}
-            data={item}
-            onEdit={() => handleEdit(item)}
-          />
-        ))}
-      </div>
+      <RencanaCardContainer>
+        {isLoading ? (
+          <RencanaCardLoading cardTotal={4} />
+        ) : (
+          rencanaList.map((item, index) => (
+            <RencanaCard
+              key={index}
+              data={item}
+              onEdit={() => handleEdit(item)}
+            />
+          ))
+        )}
+      </RencanaCardContainer>
     </AppLayout>
   );
 };

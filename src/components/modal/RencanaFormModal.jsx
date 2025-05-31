@@ -5,7 +5,7 @@ import { DropDownInput, MainInput, RupiahInput } from "../input/Input";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { CONFIG } from "../../config/Config";
-import { PostTarget } from "../../data/Api";
+import { DeleteTargetById, PostTarget } from "../../data/Api";
 import Swal from "sweetalert2";
 
 const RencanaFormModal = ({
@@ -14,7 +14,8 @@ const RencanaFormModal = ({
   onSubmit,
   title = "Modal Title",
   initialData = {},
-  mode = "create"
+  mode = "create",
+  onSuccess,
 }) => {
   const { handleSubmit, control, getValues, reset, setFocus } = useForm({
     mode: "onSubmit",
@@ -41,6 +42,7 @@ const RencanaFormModal = ({
   }, [initialData, reset]);
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
+  const [isBtnDeleteLoading, setIsBtnDeleteLoading] = useState(false);
 
   const handleClose = () => {
     const values = getValues();
@@ -62,8 +64,8 @@ const RencanaFormModal = ({
       sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
     }
 
-    initialData = {}
-    reset(initialData)
+    initialData = {};
+    reset(initialData);
 
     onClose?.();
   };
@@ -73,7 +75,7 @@ const RencanaFormModal = ({
     setIsBtnLoading(true);
 
     const dataTarget = {
-      name: data?.target ?? "",
+      name: data?.name ?? "",
       duration: `${data?.duration ?? 0} ${
         freqLabelMap[data?.incomeFrequency] ?? ""
       }`,
@@ -97,6 +99,7 @@ const RencanaFormModal = ({
 
       reset();
       sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
+      if (onSuccess) onSuccess();
       handleClose();
     } catch (error) {
       const errorMsg =
@@ -118,6 +121,48 @@ const RencanaFormModal = ({
       });
     } finally {
       setIsBtnLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const targetId = initialData?.id;
+
+    if (!targetId) {
+      Swal.fire("Gagal", "ID target tidak ditemukan.", "error");
+      return;
+    }
+
+    const confirm = await Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Data tidak bisa dikembalikan setelah dihapus.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      setIsBtnDeleteLoading(true);
+
+      await DeleteTargetById(targetId);
+
+      Swal.fire({
+        icon: "success",
+        title: "Rencana Dihapus",
+        text: "Rencana berhasil dihapus.",
+        confirmButtonText: "OK",
+      });
+
+      sessionStorage.removeItem(CONFIG.EDIT_RENCANA);
+      if (onSuccess) onSuccess();
+      reset();
+      handleClose();
+    } catch (error) {
+      Swal.fire("Gagal Menghapus", error.message, "error");
+    } finally {
+      setIsBtnDeleteLoading(false);
     }
   };
 
@@ -297,8 +342,20 @@ const RencanaFormModal = ({
           <Button
             isDisabled={isBtnLoading}
             isLoading={isBtnLoading}
-            text={"Buat"}
+            text={`${mode == "create" ? "Buat" : "Ubah Rencana"}`}
           />
+          {mode == "edit" ? (
+            <Button
+              type={"button"}
+              isDisabled={isBtnDeleteLoading}
+              isLoading={isBtnDeleteLoading}
+              variant={"bg-warning"}
+              text={`Hapus Rencana`}
+              onclick={handleDelete}
+            />
+          ) : (
+            ""
+          )}
         </form>
       </div>
     </div>
