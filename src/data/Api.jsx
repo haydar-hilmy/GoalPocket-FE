@@ -187,14 +187,6 @@ export const UpdateTarget = async (id, dataTarget) => {
     if (!response.ok) {
       const message = result?.message || result?.error;
 
-      if (
-        message?.includes("Unique constraint failed on the fields: (`name`)")
-      ) {
-        throw new Error(
-          "Nama rencana sudah digunakan. Silakan pilih nama lain."
-        );
-      }
-
       throw new Error(message || "Rencana gagal diperbarui");
     }
 

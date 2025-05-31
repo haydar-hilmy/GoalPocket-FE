@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { CONFIG } from "../../config/Config";
 import { DeleteTargetById, PostTarget } from "../../data/Api";
 import Swal from "sweetalert2";
+import { duration } from "@mui/material";
 
 const RencanaFormModal = ({
   isShow = false,
@@ -38,7 +39,18 @@ const RencanaFormModal = ({
 
   // FETCH FORM
   useEffect(() => {
-    reset(initialData); // update form data when modal opened
+    // duration: "2 bulan" to duration: 2
+    const durationMatch = initialData.duration?.match(/\d+/);
+    const numericDuration = durationMatch ? parseInt(durationMatch[0], 10) : 0;
+
+    console.log("Initial Data")
+
+    const parsedInitialData = {
+      ...initialData,
+      duration: numericDuration,
+    };
+
+    reset(parsedInitialData);
   }, [initialData, reset]);
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
@@ -64,9 +76,7 @@ const RencanaFormModal = ({
       sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
     }
 
-    initialData = {};
-    reset(initialData);
-
+    reset();
     onClose?.();
   };
 
@@ -82,18 +92,27 @@ const RencanaFormModal = ({
       initialSaving: Number(data?.initialSaving ?? 0),
       incomeFrequency: data?.incomeFrequency ?? "monthly",
       fixedIncome: Number(data?.fixedIncome ?? 0),
-      fixedIncome: Number(data?.fixedOutcome ?? 0),
+      fixedOutcome: Number(data?.fixedOutcome ?? 0),
       isCompleted: false,
       targetAmount: Number(data?.targetAmount ?? 0),
     };
 
     try {
-      const result = await PostTarget(dataTarget);
+      let result;
+
+      if (mode === "edit" && initialData?.id) {
+        result = await UpdateTarget(initialData.id, dataTarget);
+      } else {
+        result = await PostTarget(dataTarget);
+      }
 
       Swal.fire({
         icon: "success",
-        title: "Rencana Tersimpan",
-        text: "Rencana menabung berhasil ditambahkan.",
+        title: mode === "edit" ? "Rencana Diperbarui" : "Rencana Tersimpan",
+        text:
+          mode === "edit"
+            ? "Rencana menabung berhasil diperbarui."
+            : "Rencana menabung berhasil ditambahkan.",
         confirmButtonText: "OK",
         allowEscapeKey: true,
       });
