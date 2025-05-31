@@ -10,7 +10,7 @@ import { Button } from "../../components/button/Button";
 import Swal from "sweetalert2";
 import { CONFIG } from "../../config/Config";
 import { jwtDecode } from "jwt-decode";
-import { UpdateProfile } from "../../data/Api";
+import { GetUserProfile, UpdateProfile } from "../../data/Api";
 import { BorderColor, DriveFileRenameOutlineOutlined } from "@mui/icons-material";
 
 export const ProfilePage = () => {
@@ -24,22 +24,32 @@ export const ProfilePage = () => {
   } = useForm({
     defaultValues: {
       name: "",
+      email: "",
+      phoneNumber: "",
+      address: "",
+      country: "",
     },
   });
 
   useEffect(() => {
-    const storedUserData = localStorage.getItem(CONFIG.LS_USERDATA);
-
-    if (storedUserData) {
+    const fetchUserData = async () => {
       try {
-        const parsedData = JSON.parse(storedUserData);
-        if (parsedData) {
-          reset(parsedData);
+        const result = await GetUserProfile();
+        if (result) {
+          reset(result);
+          localStorage.setItem(CONFIG.LS_USERDATA, JSON.stringify(result));
         }
       } catch (error) {
-        console.error("Gagal parsing user data dari localStorage:", error);
+        console.error("Gagal mengambil data profil:", error.message);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: error.message || "Terjadi kesalahan saat mengambil data profil.",
+        });
       }
-    }
+    };
+
+    fetchUserData();
   }, [reset]);
 
   const onSubmit = async (data) => {

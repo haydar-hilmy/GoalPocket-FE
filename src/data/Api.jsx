@@ -43,6 +43,31 @@ export const loginUser = async ({ email, password }) => {
   }
 };
 
+export const GetUserProfile = async () => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/user/profile`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const message = result?.message || result?.error || "Gagal mengambil data profil.";
+      throw new Error(message);
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(error.message || "Terjadi kesalahan saat mengambil data profil.");
+  }
+};
+
+
 export const UpdateProfile = async ({
   name,
   phoneNumber,
