@@ -54,19 +54,16 @@ const Navbar = ({ page = "home", user }) => {
             >
               <Icon.House />
             </NavLink>
-            <NavLink text="Currency" hrefTo={"/rencana"} isActive={page == "Rencana Penabungan"}>
+            <NavLink text="Rencana" hrefTo={"/rencana"} isActive={page == "Rencana Penabungan"}>
               <Icon.CurrencyCircleDollar />
             </NavLink>
-            <NavLink text="Card" hrefTo={"/add"} isActive={page == "Catat Transaksi"}>
+            <NavLink text="Pemasukan" hrefTo={"/add"} isActive={page == "Catat Transaksi"}>
               <Icon.CreditCard />
             </NavLink>
-            <NavLink text="Money">
-              <Icon.MoneyWavy />
-            </NavLink>
-            <NavLink hrefTo={"/pass"} isActive={page == "Ganti Password"} text="Key">
+            <NavLink hrefTo={"/pass"} isActive={page == "Ganti Password"} text="Ganti Password">
               <Icon.Key />
             </NavLink>
-            <NavLink text="Profile" hrefTo={"/profile"} isActive={page == "Profil Saya"}>
+            <NavLink text="Profil Saya" hrefTo={"/profile"} isActive={page == "Profil Saya"}>
               <Icon.UserCircle />
             </NavLink>
             <NavLink text="Log out" hrefTo={"/logout"}>

@@ -205,9 +205,9 @@ const RencanaFormModal = ({
         className="bg-white p-8 w-11/12 rounded-md sm:w-4/6 md:w-1/2 shadow-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center mb-4">
           <div className="flex-1 flex justify-start sm:justify-center">
-            <h3 className="font-bold text-lg">{title}</h3>
+            <h3 className="font-bold text-2xl">{title}</h3>
           </div>
           <div>
             <div
