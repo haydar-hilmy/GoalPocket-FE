@@ -22,7 +22,7 @@ const Item = ({ icon, label = "Label", value = "Value" }) => {
   );
 };
 
-export const RencanaCard = ({ data }) => {
+export const RencanaCard = ({ data, onEdit }) => {
   return (
     <div className="bg-white min-w-60 w-auto px-6 py-4 rounded-lg shadow-md flex flex-col gap-3 justify-between">
       <h2 className="font-bold text-xl">{data.name}</h2>
@@ -55,9 +55,12 @@ export const RencanaCard = ({ data }) => {
         />
       </div>
       <Line />
-      <ActionButton>
+      <ActionButton onClick={onEdit}>
         <BorderColorOutlined fontSize="inherit" /> Ubah
       </ActionButton>
     </div>
   );
 };
+
+// CARA KERJA UBAH RENCANA:
+// Ketika ubah diklik, maka data akan disimpan dalam sessionStorage dan kemudian openModalFormrencana akan mengecek key EDIT_RENCANA dan fetching

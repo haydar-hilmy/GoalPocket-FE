@@ -13,9 +13,12 @@ const RencanaFormModal = ({
   onClose,
   onSubmit,
   title = "Modal Title",
+  initialData = {},
+  mode = "create"
 }) => {
-  const { handleSubmit, control, getValues, reset, watch, setFocus } = useForm({
+  const { handleSubmit, control, getValues, reset, setFocus } = useForm({
     mode: "onSubmit",
+    defaultValues: initialData,
   });
 
   const selectedFreq = useWatch({ control, name: "incomeFrequency" });
@@ -32,21 +35,10 @@ const RencanaFormModal = ({
     setIsModalShow(isShow);
   }, [isShow]);
 
-  // FETCH DRAFT FORM RENCANA
+  // FETCH FORM
   useEffect(() => {
-    const storedDraftRencana = sessionStorage.getItem(CONFIG.DRAFT_RENCANA);
-
-    if (storedDraftRencana) {
-      try {
-        const parsedData = JSON.parse(storedDraftRencana);
-        if (parsedData) {
-          reset(parsedData);
-        }
-      } catch (error) {
-        console.error("Gagal parsing user data dari localStorage:", error);
-      }
-    }
-  }, [reset]);
+    reset(initialData); // update form data when modal opened
+  }, [initialData, reset]);
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 
@@ -58,15 +50,20 @@ const RencanaFormModal = ({
 
     setIsModalShow(false);
 
-    if (isAnyFieldFilled) {
+    if (mode === "create" && isAnyFieldFilled) {
       toast.info("Data tersimpan sementara. Anda bisa lanjut nanti!", {
         position: "bottom-right",
         autoClose: 2000,
       });
       sessionStorage.setItem(CONFIG.DRAFT_RENCANA, JSON.stringify(values));
-    } else {
+    }
+
+    if (mode === "create" && !isAnyFieldFilled) {
       sessionStorage.removeItem(CONFIG.DRAFT_RENCANA);
     }
+
+    initialData = {}
+    reset(initialData)
 
     onClose?.();
   };
@@ -127,7 +124,7 @@ const RencanaFormModal = ({
   return (
     <div
       className={`${isModalShow ? "block" : "hidden"}
-    absolute
+    fixed
     top-0
     left-0
     w-screen
@@ -169,7 +166,7 @@ const RencanaFormModal = ({
           onSubmit={handleSubmit(onFormSubmit)}
         >
           <Controller
-            name="target"
+            name="name"
             control={control}
             rules={{
               required: "Nama target wajib diisi.",
@@ -287,7 +284,7 @@ const RencanaFormModal = ({
               <>
                 <RupiahInput
                   name="targetAmount"
-                  text="Jumlah Target"
+                  text="Jumlah Target Tercapai"
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Misal: Rp 4.000.000"
