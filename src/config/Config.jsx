@@ -3,6 +3,7 @@ export const CONFIG = {
   LS_USERDATA: "GPLS_USERDATA",
   DRAFT_RENCANA: "GP_DRAFT_RENCANA",
   EDIT_RENCANA: "GP_EDIT_RENCANA",
+  TARGETS_DATA: "GP_TARGETS",
   BACKEND_ENDPOINT: "localhost:3000",
   BASE_URL: "https://back-end-production-45f3.up.railway.app/api"
 };

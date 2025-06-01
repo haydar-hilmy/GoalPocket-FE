@@ -342,6 +342,7 @@ const DropDownInput = ({
   isDisabled = false,
   options = [],
   onChange,
+  onFocus,
 }) => {
   return (
     <div className="form-control flex flex-col gap-1 w-full">
@@ -352,6 +353,7 @@ const DropDownInput = ({
       <FieldInput isError={errorMsg !== ""} isDisabled={isDisabled}>
         <div className="w-full border-none border-0 outline-none px-5 py-[0.35rem]">
           <Select
+            onFocus={onFocus}
             id={name}
             name={name}
             options={options}

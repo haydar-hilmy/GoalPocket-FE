@@ -57,16 +57,18 @@ export const GetUserProfile = async () => {
     const result = await response.json();
 
     if (!response.ok) {
-      const message = result?.message || result?.error || "Gagal mengambil data profil.";
+      const message =
+        result?.message || result?.error || "Gagal mengambil data profil.";
       throw new Error(message);
     }
 
     return result;
   } catch (error) {
-    throw new Error(error.message || "Terjadi kesalahan saat mengambil data profil.");
+    throw new Error(
+      error.message || "Terjadi kesalahan saat mengambil data profil."
+    );
   }
 };
-
 
 export const UpdateProfile = async ({
   name,
@@ -184,12 +186,11 @@ export const PostTarget = async (dataTarget) => {
         );
       }
 
-      
       throw new Error(message || "Rencana gagal ditambahkan");
     }
     return result;
   } catch (error) {
-    console.error("Error: ", error)
+    console.error("Error: ", error);
     throw new Error(error.message || "Internal server error");
   }
 };
@@ -222,7 +223,6 @@ export const UpdateTarget = async (id, dataTarget) => {
   }
 };
 
-
 export const GetAllTargets = async () => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
@@ -237,15 +237,18 @@ export const GetAllTargets = async () => {
     const result = await response.json();
 
     if (!response.ok) {
-      const message = result?.message || result?.error || "Gagal mengambil data target.";
+      const message =
+        result?.message || result?.error || "Gagal mengambil data target.";
       throw new Error(message);
     }
 
-    return result; 
+    return result;
   } catch (error) {
-    throw new Error(error.message || "Terjadi kesalahan saat mengambil data target.");
+    throw new Error(
+      error.message || "Terjadi kesalahan saat mengambil data target."
+    );
   }
-}
+};
 
 export const DeleteTargetById = async (id) => {
   try {
@@ -261,7 +264,8 @@ export const DeleteTargetById = async (id) => {
     const result = await response.json();
 
     if (!response.ok) {
-      const message = result?.message || result?.error || "Gagal menghapus rencana.";
+      const message =
+        result?.message || result?.error || "Gagal menghapus rencana.";
       throw new Error(message);
     }
 
@@ -269,5 +273,32 @@ export const DeleteTargetById = async (id) => {
   } catch (error) {
     console.error("Delete Error:", error);
     throw new Error(error.message || "Terjadi kesalahan saat menghapus.");
+  }
+};
+
+export const PostTracking = async (dataTracking) => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/trackings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(dataTracking),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const message = result?.message || result?.error;
+      throw new Error(message || "Transaksi gagal ditambahkan");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw new Error(error.message || "Internal server error");
   }
 };
