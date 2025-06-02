@@ -108,13 +108,15 @@ const AddTranscationPage = () => {
 
       const dataTracking = {
         targetName: data?.targetName ?? "",
-        type: data?.type ?? "",
+        type: data?.transactionType ?? "",
         category: data?.category ?? "",
         amount: Number(data?.amount ?? 0),
         notes: data?.notes ?? "",
       };
 
       let result = await PostTracking(dataTracking);
+
+      console.log("Result PostTracking: ", result)
 
       Swal.fire({
         icon: "success",
