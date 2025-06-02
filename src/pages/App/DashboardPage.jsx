@@ -1,13 +1,88 @@
-import { InOutComeBox } from "../../components/box/InOutComeBox";
+import { InOutComeBox, InOutComeBoxLoading } from "../../components/box/InOutComeBox";
 import AppLayout from "../../layouts/AppLayout";
 import IncomeExpenseChart from "../../components/chart/InComeExpenseChart";
+import { formatRupiah } from "../../utils/FormatRupiah";
+import { CONFIG } from "../../config/Config";
+import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 
 const DashboardPage = () => {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchSummary = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem(CONFIG.LS_KEY);
+
+      const res = await fetch(`${CONFIG.BASE_URL}/user/summary`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch dashboard summary");
+
+      const result = await res.json();
+      setSummary(result);
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: err.message || "Gagal mengambil data summary",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSummary();
+  }, []);
+
   return (
     <AppLayout title="Dashboard App" page="dashboard">
-      <div className="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-10">
-        <InOutComeBox title="Total Pemasukan" number="Rp 500.000" />
-        <InOutComeBox title="Total Pengeluaran" number="Rp 100.000" />
+      <div className="w-full px-4 md:px-10 py-6">
+        <div className="flex flex-wrap gap-6 justify-center">
+          {loading ? (
+            <>
+              <InOutComeBoxLoading />
+              <InOutComeBoxLoading />
+              <InOutComeBoxLoading />
+              <InOutComeBoxLoading />
+              <InOutComeBoxLoading />
+            </>
+          ) : (
+            <>
+              <InOutComeBox
+                title="Total Pemasukan"
+                number={formatRupiah(summary.totalIncome)}
+                type="income"
+              />
+              <InOutComeBox
+                title="Total Pengeluaran"
+                number={formatRupiah(summary.totalExpense)}
+                type="expense"
+              />
+              <InOutComeBox
+                title="Tabungan Saat Ini"
+                number={formatRupiah(summary.currentSaving)}
+                type="saving"
+              />
+              <InOutComeBox
+                title="Rata-rata Pemasukan"
+                number={formatRupiah(summary.avgIncome)}
+                type="avgIncome"
+              />
+              <InOutComeBox
+                title="Rata-rata Pengeluaran"
+                number={formatRupiah(summary.avgExpense)}
+                type="avgOutcome"
+              />
+            </>
+          )}
+        </div>
       </div>
 
       <IncomeExpenseChart />
