@@ -1,10 +1,8 @@
 import { Link } from "react-router";
 import Logo from "../logo/Logo";
-import { Icon } from "../icons/icons";
 import { NavLink } from "./NavLink";
 import { useState } from "react";
-import { Menu, MenuItem } from "@mui/material";
-import { Logout } from "@mui/icons-material";
+import { AccountCircleOutlined, DashboardOutlined, DateRangeOutlined, KeyOutlined, Logout, MenuOutlined, ReceiptLongOutlined } from "@mui/icons-material";
 
 const Navbar = ({ page = "home", user }) => {
   const { imgPath, username } = {
@@ -25,7 +23,7 @@ const Navbar = ({ page = "home", user }) => {
           className="hover:bg-slate-300 p-1 rounded-sm"
           onClick={toggleSidebar}
         >
-          <Icon.BurgerMenu />
+          <MenuOutlined />
         </button>
 
         <Link to={"/profile"} className="flex flex-row gap-3 items-center cursor-pointer">
@@ -52,22 +50,23 @@ const Navbar = ({ page = "home", user }) => {
               text="Dashboard"
               hrefTo={"/"}
             >
-              <Icon.House />
+              <DashboardOutlined />
             </NavLink>
             <NavLink text="Rencana" hrefTo={"/rencana"} isActive={page == "Rencana Penabungan"}>
-              <Icon.CurrencyCircleDollar />
+              {/* <Icon.CurrencyCircleDollar /> */}
+              <DateRangeOutlined color="currentColor" />
             </NavLink>
             <NavLink text="Pemasukan" hrefTo={"/add"} isActive={page == "Catat Transaksi"}>
-              <Icon.CreditCard />
+              <ReceiptLongOutlined />
             </NavLink>
             <NavLink hrefTo={"/pass"} isActive={page == "Ganti Password"} text="Ganti Password">
-              <Icon.Key />
+              <KeyOutlined />
             </NavLink>
             <NavLink text="Profil Saya" hrefTo={"/profile"} isActive={page == "Profil Saya"}>
-              <Icon.UserCircle />
+              <AccountCircleOutlined />
             </NavLink>
             <NavLink text="Log out" hrefTo={"/logout"}>
-              <Logout />
+              <Logout color="inherit" />
             </NavLink>
           </nav>
         </div>
