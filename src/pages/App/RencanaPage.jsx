@@ -39,8 +39,15 @@ const RencanaPage = () => {
   const fetchTargets = async () => {
     try {
       setLoading(true);
+      const localData = localStorage.getItem(CONFIG.TARGETS_DATA);
+      if (localData) {
+        const parsedData = JSON.parse(localData);
+        setRencanaList(parsedData);
+        return;
+      }
       const targets = await GetAllTargets();
       setRencanaList(targets);
+      localStorage.setItem(CONFIG.TARGETS_DATA, JSON.stringify(targets));
     } catch (err) {
       Swal.fire({
         icon: "error",

@@ -112,6 +112,7 @@ const RencanaFormModal = ({
         allowEscapeKey: true,
       });
 
+      localStorage.removeItem(CONFIG.TARGETS_DATA);
       reset();
       if (onSuccess) onSuccess();
       handleClose();
@@ -138,15 +139,15 @@ const RencanaFormModal = ({
       setIsBtnLoading(false);
     }
   };
-
+  
   const handleDelete = async () => {
     const targetId = initialData?.id;
-
+    
     if (!targetId) {
       Swal.fire("Gagal", "ID target tidak ditemukan.", "error");
       return;
     }
-
+    
     const confirm = await Swal.fire({
       title: "Yakin ingin menghapus?",
       text: "Data tidak bisa dikembalikan setelah dihapus.",
@@ -155,22 +156,24 @@ const RencanaFormModal = ({
       confirmButtonText: "Hapus",
       cancelButtonText: "Batal",
     });
-
+    
     if (!confirm.isConfirmed) return;
-
+    
     try {
       setIsBtnDeleteLoading(true);
-
+      
       await DeleteTargetById(targetId);
-
+      
       Swal.fire({
         icon: "success",
         title: "Rencana Dihapus",
         text: "Rencana berhasil dihapus.",
         confirmButtonText: "OK",
       });
-
+      
+      localStorage.removeItem(CONFIG.TARGETS_DATA);
       sessionStorage.removeItem(CONFIG.EDIT_RENCANA);
+      
       if (onSuccess) onSuccess();
       reset();
       handleClose();
