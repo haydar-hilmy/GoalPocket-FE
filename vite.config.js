@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,7 +13,8 @@ export default defineConfig({
       manifest: {
         name: "GoalPocket: Perencana dan Analisis Keuangan",
         short_name: "GoalPocket",
-        description: "Aplikasi berbasis web untuk mencatat transaksi keuangan, memvisualisasikan data, dan memprediksi tabungan secara cerdas.",
+        description:
+          "Aplikasi berbasis web untuk mencatat transaksi keuangan, memvisualisasikan data, dan memprediksi tabungan secara cerdas.",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
@@ -21,10 +23,10 @@ export default defineConfig({
           {
             src: "/logo/gp_512.png",
             sizes: "512x512",
-            type: "image/png",
-          },
-        ],
-      },
-    }),
-  ],
+            type: "image/png"
+          }
+        ]
+      }
+    })
+  ]
 });
