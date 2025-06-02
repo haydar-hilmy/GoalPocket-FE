@@ -95,7 +95,7 @@ const AddTranscationPage = () => {
     if (targetName && targetName.length === 0) {
       setError("targetName", {
         type: "manual",
-        message: "Silakan buat target terlebih dahulu.",
+        message: "Silakan buat rencana terlebih dahulu.",
       });
     } else {
       clearErrors("targetName");
@@ -159,6 +159,7 @@ const AddTranscationPage = () => {
               <DropDownInput
                 {...field}
                 hook_form={field}
+                isDisabled={targetName && targetName.length === 0 ? true : false}
                 text="Nama Target"
                 placeholder="Pilih target"
                 errorMsg={fieldState.error?.message || ""}
