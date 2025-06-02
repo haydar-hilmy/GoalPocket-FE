@@ -242,7 +242,7 @@ const AddTranscationPage = () => {
           />
 
           <Button
-            isDisabled={isBtnLoading}
+            isDisabled={isBtnLoading || targetName && targetName.length === 0 ? true : false}
             isLoading={isBtnLoading}
             text="Tambah Transaksi"
           />

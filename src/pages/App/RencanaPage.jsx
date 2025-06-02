@@ -11,6 +11,7 @@ import {
 import { CONFIG } from "../../config/Config";
 import Swal from "sweetalert2";
 import { GetAllTargets } from "../../data/Api";
+import RencanaCardEmptyState from "../../components/alertBox/RencanaCardEmpty";
 
 const RencanaPage = () => {
   const [isOpenFormModal, setIsOpenFormModal] = useState(false);
@@ -84,19 +85,25 @@ const RencanaPage = () => {
       />
 
       {/* RENCANA CARDs */}
-      <RencanaCardContainer>
-        {isLoading ? (
+      {isLoading ? (
+        <RencanaCardContainer>
           <RencanaCardLoading cardTotal={4} />
-        ) : (
-          rencanaList.map((item, index) => (
+        </RencanaCardContainer>
+      ) : rencanaList.length === 0 ? (
+        <div className="py-10">
+        <RencanaCardEmptyState />
+        </div>
+      ) : (
+        <RencanaCardContainer>
+          {rencanaList.map((item, index) => (
             <RencanaCard
               key={index}
               data={item}
               onEdit={() => handleEdit(item)}
             />
-          ))
-        )}
-      </RencanaCardContainer>
+          ))}
+        </RencanaCardContainer>
+      )}
     </AppLayout>
   );
 };
