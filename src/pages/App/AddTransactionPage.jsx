@@ -32,8 +32,8 @@ const AddTranscationPage = () => {
   const incomeCategories = [
     { value: "Pesangon", label: "Pesangon" },
     { value: "Gaji", label: "Gaji" },
-    { value: "Korupsi", label: "Korupsi" },
     { value: "Angpao", label: "Angpao" },
+    { value: "Other", label: "Other" },
   ];
 
   const expenseCategories = [
@@ -42,7 +42,7 @@ const AddTranscationPage = () => {
     { value: "Healing", label: "Healing" },
     { value: "Self Reward", label: "Self Reward" },
     { value: "Bisnis", label: "Bisnis" },
-    { value: "Other", label: "Other ..." },
+    { value: "Other", label: "Other" },
   ];
 
   const transactionType = watch("transactionType");
