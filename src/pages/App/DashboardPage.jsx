@@ -78,7 +78,7 @@ const DashboardPage = () => {
               <InOutComeBox
                 title="Rata-rata Pengeluaran"
                 number={formatRupiah(summary.avgExpense)}
-                type="avgExpense"
+                type="avgOutcome"
               />
             </>
           )}
