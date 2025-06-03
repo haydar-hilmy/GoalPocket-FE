@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -6,39 +7,102 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Line,
+  LineChart
 } from "recharts";
+import { GetAllTrackings } from "../../data/Api";
+import dayjs from "dayjs";
+import groupBy from "lodash.groupby";
 
-const dataDummy = [
-  { month: "1", income: 200000, expense: 50000 },
-  { month: "2", income: 100000, expense: 20000 },
-  { month: "3", income: 100000, expense: 10000 },
-  { month: "4", income: 100000, expense: 100000 },
-  { month: "5", income: 125000, expense: 75000 },
-  { month: "6", income: 150000, expense: 125000 },
-  { month: "7", income: 200000, expense: 175000 },
-  { month: "8", income: 80000, expense: 60000 },
-  { month: "9", income: 50000, expense: 110000 },
-  { month: "10", income: 125000, expense: 50000 },
-  { month: "11", income: 90000, expense: 30000 },
-  { month: "12", income: 120000, expense: 135000 }
-];
+const IncomeExpenseChart = ({ token }) => {
+  const [chartData, setChartData] = useState([]);
 
-const IncomeExpenseChart = () => {
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const trackings = await GetAllTrackings(token);
+
+        const sevenDaysAgo = dayjs().subtract(6, "day").startOf("day");
+        const filteredData = trackings.filter((t) =>
+          dayjs(t.createdAt).isAfter(sevenDaysAgo)
+        );
+
+        const grouped = groupBy(filteredData, (t) =>
+          dayjs(t.createdAt).format("YYYY-MM-DD")
+        );
+
+        const days = [...Array(7).keys()].map((i) =>
+          dayjs()
+            .subtract(6 - i, "day")
+            .format("YYYY-MM-DD")
+        );
+
+        const result = days.map((date) => {
+          const items = grouped[date] || [];
+          const income = items
+            .filter((i) => i.type === "income")
+            .reduce((sum, i) => sum + i.amount, 0);
+          const expense = items
+            .filter((i) => i.type === "expense")
+            .reduce((sum, i) => sum + i.amount, 0);
+
+          return {
+            date,
+            income,
+            expense,
+            notes: items
+          };
+        });
+
+        setChartData(result);
+      } catch (error) {
+        console.error("Error loading chart data:", error);
+      }
+    };
+
+    loadData();
+  }, [token]);
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const { notes } = chartData.find((d) => d.date === label) || {};
+      return (
+        <div className="bg-white p-2 border rounded shadow text-sm">
+          <p className="font-bold">{label}</p>
+          {notes?.map((item, idx) => (
+            <div key={idx}>
+              <span className="font-medium">{item.type}: </span> {item.amount} -{" "}
+              {item.notes}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="w-full h-96 mt-10 bg-white p-4 rounded-xl shadow">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={dataDummy}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="income" fill="#00e676" name="Pemasukan" />
-          <Bar dataKey="expense" fill="#ff1744" name="Pengeluaran" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={chartData}>
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip content={<CustomTooltip />} />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="income"
+          stroke="#4caf50"
+          name="Pemasukan"
+        />
+        <Line
+          type="monotone"
+          dataKey="expense"
+          stroke="#f44336"
+          name="Pengeluaran"
+        />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 

@@ -1,4 +1,7 @@
-import { InOutComeBox, InOutComeBoxLoading } from "../../components/box/InOutComeBox";
+import {
+  InOutComeBox,
+  InOutComeBoxLoading
+} from "../../components/box/InOutComeBox";
 import AppLayout from "../../layouts/AppLayout";
 import IncomeExpenseChart from "../../components/chart/InComeExpenseChart";
 import { formatRupiah } from "../../utils/FormatRupiah";
@@ -10,16 +13,17 @@ const DashboardPage = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const token = localStorage.getItem(CONFIG.LS_KEY);
+
   const fetchSummary = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem(CONFIG.LS_KEY);
 
       const res = await fetch(`${CONFIG.BASE_URL}/user/summary`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (!res.ok) throw new Error("Failed to fetch dashboard summary");
@@ -30,7 +34,7 @@ const DashboardPage = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: err.message || "Gagal mengambil data summary",
+        text: err.message || "Gagal mengambil data summary"
       });
     } finally {
       setLoading(false);
@@ -85,7 +89,12 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <IncomeExpenseChart />
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-4">
+          Ringkasan Keuangan 7 Hari Terakhir
+        </h2>
+        <IncomeExpenseChart token={token} />
+      </div>
     </AppLayout>
   );
 };

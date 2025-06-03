@@ -5,9 +5,9 @@ export const registerUser = async ({ name, email, password }) => {
     const response = await fetch(`${CONFIG.BASE_URL}/auth/register`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password })
     });
 
     const result = await response.json();
@@ -27,9 +27,9 @@ export const loginUser = async ({ email, password }) => {
     const response = await fetch(`${CONFIG.BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password })
     });
 
     const result = await response.json();
@@ -50,8 +50,8 @@ export const GetUserProfile = async () => {
     const response = await fetch(`${CONFIG.BASE_URL}/user/profile`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     const result = await response.json();
@@ -74,7 +74,7 @@ export const UpdateProfile = async ({
   name,
   phoneNumber,
   address,
-  country,
+  country
 }) => {
   try {
     const token = localStorage.getItem(CONFIG.LS_KEY);
@@ -83,14 +83,14 @@ export const UpdateProfile = async ({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         name: name,
         phoneNumber: phoneNumber,
         address: address,
-        country: country,
-      }),
+        country: country
+      })
     });
 
     const result = await response.json();
@@ -113,12 +113,12 @@ export const UpdatePassword = async ({ oldPassword, newPassword }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         oldPassword: oldPassword,
-        newPassword: newPassword,
-      }),
+        newPassword: newPassword
+      })
     });
 
     const result = await response.json();
@@ -142,8 +142,8 @@ export const RecoveryPassword = async ({ email }) => {
       {
         method: "POST",
         body: JSON.stringify({
-          email: email,
-        }),
+          email: email
+        })
       }
     );
 
@@ -169,9 +169,9 @@ export const PostTarget = async (dataTarget) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(dataTarget),
+      body: JSON.stringify(dataTarget)
     });
 
     const result = await response.json();
@@ -203,9 +203,9 @@ export const UpdateTarget = async (id, dataTarget) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(dataTarget),
+      body: JSON.stringify(dataTarget)
     });
 
     const result = await response.json();
@@ -230,8 +230,8 @@ export const GetAllTargets = async () => {
     const response = await fetch(`${CONFIG.BASE_URL}/targets`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     const result = await response.json();
@@ -257,8 +257,8 @@ export const DeleteTargetById = async (id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     const result = await response.json();
@@ -284,9 +284,9 @@ export const PostTracking = async (dataTracking) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(dataTracking),
+      body: JSON.stringify(dataTracking)
     });
 
     const result = await response.json();
@@ -300,5 +300,30 @@ export const PostTracking = async (dataTracking) => {
   } catch (error) {
     console.error("Error: ", error);
     throw new Error(error.message || "Internal server error");
+  }
+};
+
+export const GetAllTrackings = async () => {
+  try {
+    const token = localStorage.getItem(CONFIG.LS_KEY);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/trackings`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      const message =
+        result?.message || result?.error || "Gagal mengambil data transaksi.";
+      throw new Error(message);
+    }
+    return result;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw new Error(
+      error.message || "Terjadi kesalahan saat mengambil data transaksi."
+    );
   }
 };
