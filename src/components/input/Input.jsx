@@ -1,4 +1,5 @@
 import { SendOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
 import { useState, useEffect } from "react";
 import PasswordStrengthBar from "../barLevel/passwordStrengthBar";
 import { Button } from "../button/Button";
@@ -14,7 +15,7 @@ const FieldInput = ({
   children,
   variant,
   isError = false,
-  isDisabled = false,
+  isDisabled = false
 }) => {
   return (
     <div
@@ -41,7 +42,7 @@ const PasswordInput = ({
   isDisabled = false,
   value,
   onChange,
-  onBlur,
+  onBlur
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
@@ -92,7 +93,7 @@ const MainInput = ({
   onBlur,
   onInput,
   onChange,
-  value,
+  value
 }) => {
   return (
     <>
@@ -188,7 +189,9 @@ const InOutComeInput = ({ title, categories = [], onSubmit }) => {
         />
 
         <div className="w-full sm:w-auto">
-          <Button text="Kirim" type="Submit" variant="px-6 w-full"><SendOutlined /></Button>
+          <Button text="Kirim" type="Submit" variant="px-6 w-full">
+            <SendOutlined />
+          </Button>
         </div>
       </div>
     </form>
@@ -207,7 +210,7 @@ const RupiahInput = ({
   isDisabled = false,
   onBlur,
   onInput,
-  autofocus = false,
+  autofocus = false
 }) => {
   const [displayValue, setDisplayValue] = useState("");
 
@@ -264,7 +267,7 @@ const PhoneNumberInput = ({
   isDisabled = false,
   value = "", // from Controller
   onChange, // from Controller
-  onBlur, // optional from Controller
+  onBlur // optional from Controller
 }) => {
   const [displayValue, setDisplayValue] = useState("");
 
@@ -331,8 +334,6 @@ const PhoneNumberInput = ({
   );
 };
 
-
-
 const DropDownInput = ({
   name = "dropdown",
   text = "Pilihan",
@@ -342,7 +343,7 @@ const DropDownInput = ({
   isDisabled = false,
   options = [],
   onChange,
-  onFocus,
+  onFocus
 }) => {
   return (
     <div className="form-control flex flex-col gap-1 w-full">
@@ -366,7 +367,7 @@ const DropDownInput = ({
               onChange?.({ target: { name, value: selectedOption?.value } });
               if (hook_form?.onChange) {
                 hook_form.onChange({
-                  target: { value: selectedOption?.value },
+                  target: { value: selectedOption?.value }
                 });
               }
             }}
@@ -381,8 +382,6 @@ const DropDownInput = ({
   );
 };
 
-
-
 countries.registerLocale(enLocale);
 
 const CountrySearchSelectInput = ({
@@ -391,7 +390,7 @@ const CountrySearchSelectInput = ({
   text = "Negara",
   hook_form,
   isDisabled = false,
-  onchange,
+  onchange
 }) => {
   const [options, setOptions] = useState([]);
 
@@ -399,7 +398,7 @@ const CountrySearchSelectInput = ({
     const countryObj = countries.getNames("id", { select: "official" });
     const countryArr = Object.entries(countryObj).map(([code, name]) => ({
       value: name,
-      label: `${name} (${code})`,
+      label: `${name} (${code})`
     }));
     setOptions(countryArr);
   }, []);
@@ -425,7 +424,7 @@ const CountrySearchSelectInput = ({
               onchange?.({ target: { name, value: selectedOption?.value } });
               if (hook_form?.onChange) {
                 hook_form.onChange({
-                  target: { value: selectedOption?.value },
+                  target: { value: selectedOption?.value }
                 });
               }
             }}
@@ -441,6 +440,22 @@ const CountrySearchSelectInput = ({
   );
 };
 
+const SearchInput = ({ value, onChange, placeholder }) => {
+  return (
+    <div className="relative w-full max-w-md mb-3">
+      <input
+        type="text"
+        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+
+      <SearchIcon className="absolute right-3 top-2.5 text-gray-500" />
+    </div>
+  );
+};
+
 export {
   MainInput,
   PasswordInput,
@@ -449,4 +464,5 @@ export {
   CountrySearchSelectInput,
   RupiahInput,
   DropDownInput,
+  SearchInput
 };

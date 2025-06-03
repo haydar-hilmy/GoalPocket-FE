@@ -2,13 +2,22 @@ import { Link } from "react-router";
 import Logo from "../logo/Logo";
 import { NavLink } from "./NavLink";
 import { useState } from "react";
-import { AccountCircleOutlined, DashboardOutlined, DateRangeOutlined, KeyOutlined, Logout, MenuOutlined, ReceiptLongOutlined } from "@mui/icons-material";
+import {
+  AccountCircleOutlined,
+  DashboardOutlined,
+  DateRangeOutlined,
+  HistoryOutlined,
+  KeyOutlined,
+  Logout,
+  MenuOutlined,
+  ReceiptLongOutlined
+} from "@mui/icons-material";
 
 const Navbar = ({ page = "home", user }) => {
   const { imgPath, username } = {
     imgPath: "user/default-user.png",
     username: "User",
-    ...user,
+    ...user
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +35,10 @@ const Navbar = ({ page = "home", user }) => {
           <MenuOutlined />
         </button>
 
-        <Link to={"/profile"} className="flex flex-row gap-3 items-center cursor-pointer">
+        <Link
+          to={"/profile"}
+          className="flex flex-row gap-3 items-center cursor-pointer"
+        >
           <img src={imgPath} className="w-7" />
           <small className="font-bold text-base">{username}</small>
         </Link>
@@ -52,17 +64,40 @@ const Navbar = ({ page = "home", user }) => {
             >
               <DashboardOutlined />
             </NavLink>
-            <NavLink text="Rencana" hrefTo={"/rencana"} isActive={page == "Rencana Penabungan"}>
+            <NavLink
+              text="Rencana"
+              hrefTo={"/rencana"}
+              isActive={page == "Rencana Penabungan"}
+            >
               {/* <Icon.CurrencyCircleDollar /> */}
               <DateRangeOutlined color="currentColor" />
             </NavLink>
-            <NavLink text="Pemasukan" hrefTo={"/add"} isActive={page == "Catat Transaksi"}>
+            <NavLink
+              text="Pemasukan"
+              hrefTo={"/add"}
+              isActive={page == "Catat Transaksi"}
+            >
               <ReceiptLongOutlined />
             </NavLink>
-            <NavLink hrefTo={"/pass"} isActive={page == "Ganti Password"} text="Ganti Password">
+            <NavLink
+              text="Riwayat Transaksi"
+              hrefTo={"/history"}
+              isActive={page == "Riwayat Transaksi"}
+            >
+              <HistoryOutlined />
+            </NavLink>
+            <NavLink
+              hrefTo={"/pass"}
+              isActive={page == "Ganti Password"}
+              text="Ganti Password"
+            >
               <KeyOutlined />
             </NavLink>
-            <NavLink text="Profil Saya" hrefTo={"/profile"} isActive={page == "Profil Saya"}>
+            <NavLink
+              text="Profil Saya"
+              hrefTo={"/profile"}
+              isActive={page == "Profil Saya"}
+            >
               <AccountCircleOutlined />
             </NavLink>
             <NavLink text="Log out" hrefTo={"/logout"}>

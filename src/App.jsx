@@ -9,6 +9,7 @@ import { useContext } from "react";
 import RecoveryPage from "./pages/RecoveryPage";
 import DashboardPage from "./pages/App/DashboardPage";
 import AddTransactionPage from "./pages/App/AddTransactionPage";
+import HistoryPage from "./pages/App/HistoryPage";
 import RequireAuth from "./utils/auth/RequireAuth";
 import RedirectIfLoggedIn from "./utils/auth/RedirectIfLoggedIn";
 import { LogoutPage } from "./pages/LogoutPage";
@@ -24,36 +25,38 @@ function App() {
         <RedirectIfLoggedIn>
           <LoginPage />
         </RedirectIfLoggedIn>
-      ),
+      )
     },
     {
       path: "/register",
-      element: <RegisterPage />,
+      element: <RegisterPage />
     },
     {
       path: "/forgot",
-      element: <RecoveryPage />,
+      element: <RecoveryPage />
     },
     {
       path: "/logout",
-      element: <LogoutPage />,
+      element: <LogoutPage />
     },
     {
       element: <RequireAuth />,
       children: [
         {
           path: "/",
-          element: <DashboardPage />,
+          element: <DashboardPage />
         },
         {
           path: "/add",
-          element: <AddTransactionPage />,
+          element: <AddTransactionPage />
+        },
+        {
+          path: "/history",
+          element: <HistoryPage />
         },
         {
           path: "/profile",
-          element: (
-            <ProfilePage />
-          ),
+          element: <ProfilePage />
         },
         {
           path: "/pass",
@@ -62,9 +65,9 @@ function App() {
         {
           path: "/rencana",
           element: <RencanaPage />
-        },
-      ],
-    },
+        }
+      ]
+    }
   ]);
 
   return (
