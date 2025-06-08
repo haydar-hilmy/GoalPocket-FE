@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import IncomeHistoryTable from "../../components/history/IncomeHistoryTable";
-import ExpenseHistoryTable from "../../components/history/ExpenseHistoryTable";
+import IncomeHistoryTable, {
+  IncomeHistoryTableLoading,
+} from "../../components/history/IncomeHistoryTable";
+import ExpenseHistoryTable, {
+  ExpenseHistoryTableLoading,
+} from "../../components/history/ExpenseHistoryTable";
 import { GetAllTrackings } from "../../data/Api";
 import { CONFIG } from "../../config/Config";
 import AppLayout from "../../layouts/AppLayout";
@@ -8,6 +12,7 @@ import AppLayout from "../../layouts/AppLayout";
 const HistoryPage = () => {
   const [income, setIncomes] = useState([]);
   const [expense, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem(CONFIG.LS_KEY);
 
@@ -22,6 +27,8 @@ const HistoryPage = () => {
         setExpenses(expenseData);
       } catch (error) {
         console.error("Gagal mengambil data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -38,8 +45,16 @@ const HistoryPage = () => {
         <h1 className="text-2xl font-bold mb-6">
           Histori Pemasukan & Pengeluaran
         </h1>
-        <IncomeHistoryTable data={income} />
-        <ExpenseHistoryTable data={expense} />
+        {loading ? (
+          <IncomeHistoryTableLoading />
+        ) : (
+          <IncomeHistoryTable data={income} />
+        )}
+        {loading ? (
+          <ExpenseHistoryTableLoading />
+        ) : (
+          <ExpenseHistoryTable data={expense} />
+        )}
       </div>
     </AppLayout>
   );
