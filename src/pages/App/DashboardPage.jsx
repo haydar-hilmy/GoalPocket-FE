@@ -49,7 +49,7 @@ const DashboardPage = () => {
   return (
     <AppLayout title="Dashboard App" page="dashboard">
       <div className="w-full px-4 md:px-10 py-6">
-        {loading ? <PredictedBalanceBoxLoading /> : <PredictedBalanceBox />}
+        {loading ? <PredictedBalanceBoxLoading /> : <PredictedBalanceBox balance={0} />}
 
         <div className="flex flex-wrap gap-6 justify-center">
           {loading ? (
@@ -64,27 +64,27 @@ const DashboardPage = () => {
             <>
               <InOutComeBox
                 title="Total Pemasukan"
-                number={formatRupiah(summary.totalIncome ?? 0)}
+                number={formatRupiah(summary?.totalIncome ?? 0)}
                 type="income"
               />
               <InOutComeBox
                 title="Total Pengeluaran"
-                number={formatRupiah(summary.totalExpense ?? 0)}
+                number={formatRupiah(summary?.totalExpense ?? 0)}
                 type="expense"
               />
               <InOutComeBox
                 title="Tabungan Saat Ini"
-                number={formatRupiah(summary.currentSaving ?? 0)}
+                number={formatRupiah(summary?.currentSaving ?? 0)}
                 type="saving"
               />
               <InOutComeBox
                 title="Rata-rata Pemasukan"
-                number={formatRupiah(summary.avgIncome ?? 0)}
+                number={formatRupiah(summary?.avgIncome ?? 0)}
                 type="avgIncome"
               />
               <InOutComeBox
                 title="Rata-rata Pengeluaran"
-                number={formatRupiah(summary.avgExpense ?? 0)}
+                number={formatRupiah(summary?.avgExpense ?? 0)}
                 type="avgOutcome"
               />
             </>
