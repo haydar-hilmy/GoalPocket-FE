@@ -84,7 +84,7 @@ const IncomeExpenseChart = ({ token }) => {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="min-w-[900px]">
+      <div className="min-w-[800px]">
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>
             <XAxis dataKey="date" />
