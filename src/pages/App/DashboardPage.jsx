@@ -8,6 +8,7 @@ import { formatRupiah } from "../../utils/FormatRupiah";
 import { CONFIG } from "../../config/Config";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import { PredictedBalanceBox, PredictedBalanceBoxLoading } from "../../components/box/PredictBalanceBox";
 
 const DashboardPage = () => {
   const [summary, setSummary] = useState(null);
@@ -48,6 +49,8 @@ const DashboardPage = () => {
   return (
     <AppLayout title="Dashboard App" page="dashboard">
       <div className="w-full px-4 md:px-10 py-6">
+        {loading ? <PredictedBalanceBoxLoading /> : <PredictedBalanceBox />}
+
         <div className="flex flex-wrap gap-6 justify-center">
           {loading ? (
             <>
