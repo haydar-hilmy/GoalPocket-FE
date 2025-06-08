@@ -1,6 +1,6 @@
 import {
   InOutComeBox,
-  InOutComeBoxLoading
+  InOutComeBoxLoading,
 } from "../../components/box/InOutComeBox";
 import AppLayout from "../../layouts/AppLayout";
 import IncomeExpenseChart from "../../components/chart/InComeExpenseChart";
@@ -22,8 +22,8 @@ const DashboardPage = () => {
       const res = await fetch(`${CONFIG.BASE_URL}/user/summary`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!res.ok) throw new Error("Failed to fetch dashboard summary");
@@ -34,7 +34,7 @@ const DashboardPage = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: err.message || "Gagal mengambil data summary"
+        text: err.message || "Gagal mengambil data summary",
       });
     } finally {
       setLoading(false);
@@ -93,7 +93,9 @@ const DashboardPage = () => {
         <h2 className="text-xl font-semibold mb-4">
           Ringkasan Keuangan 7 Hari Terakhir
         </h2>
-        <IncomeExpenseChart token={token} />
+        <div>
+          <IncomeExpenseChart token={token} />
+        </div>
       </div>
     </AppLayout>
   );

@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
   Line,
-  LineChart
+  LineChart,
 } from "recharts";
 import { GetAllTrackings } from "../../data/Api";
 import dayjs from "dayjs";
@@ -51,7 +51,7 @@ const IncomeExpenseChart = ({ token }) => {
             date,
             income,
             expense,
-            notes: items
+            notes: items,
           };
         });
 
@@ -68,7 +68,7 @@ const IncomeExpenseChart = ({ token }) => {
     if (active && payload && payload.length) {
       const { notes } = chartData.find((d) => d.date === label) || {};
       return (
-        <div className="bg-white p-2 border rounded shadow text-sm">
+        <div className="bg-white p-2 border rounded shadow text-sm w-full">
           <p className="font-bold">{label}</p>
           {notes?.map((item, idx) => (
             <div key={idx}>
@@ -83,26 +83,30 @@ const IncomeExpenseChart = ({ token }) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData}>
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="income"
-          stroke="#4caf50"
-          name="Pemasukan"
-        />
-        <Line
-          type="monotone"
-          dataKey="expense"
-          stroke="#f44336"
-          name="Pengeluaran"
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="w-full overflow-x-auto">
+      <div className="min-w-[900px]">
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={chartData}>
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="income"
+              stroke="#4caf50"
+              name="Pemasukan"
+            />
+            <Line
+              type="monotone"
+              dataKey="expense"
+              stroke="#f44336"
+              name="Pengeluaran"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 };
 
