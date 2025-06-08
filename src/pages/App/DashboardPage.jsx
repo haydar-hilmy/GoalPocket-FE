@@ -61,27 +61,27 @@ const DashboardPage = () => {
             <>
               <InOutComeBox
                 title="Total Pemasukan"
-                number={formatRupiah(summary.totalIncome)}
+                number={formatRupiah(summary.totalIncome ?? 0)}
                 type="income"
               />
               <InOutComeBox
                 title="Total Pengeluaran"
-                number={formatRupiah(summary.totalExpense)}
+                number={formatRupiah(summary.totalExpense ?? 0)}
                 type="expense"
               />
               <InOutComeBox
                 title="Tabungan Saat Ini"
-                number={formatRupiah(summary.currentSaving)}
+                number={formatRupiah(summary.currentSaving ?? 0)}
                 type="saving"
               />
               <InOutComeBox
                 title="Rata-rata Pemasukan"
-                number={formatRupiah(summary.avgIncome)}
+                number={formatRupiah(summary.avgIncome ?? 0)}
                 type="avgIncome"
               />
               <InOutComeBox
                 title="Rata-rata Pengeluaran"
-                number={formatRupiah(summary.avgExpense)}
+                number={formatRupiah(summary.avgExpense ?? 0)}
                 type="avgOutcome"
               />
             </>
