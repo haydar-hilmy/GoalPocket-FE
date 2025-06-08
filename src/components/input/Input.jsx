@@ -15,7 +15,7 @@ const FieldInput = ({
   children,
   variant,
   isError = false,
-  isDisabled = false
+  isDisabled = false,
 }) => {
   return (
     <div
@@ -42,7 +42,7 @@ const PasswordInput = ({
   isDisabled = false,
   value,
   onChange,
-  onBlur
+  onBlur,
 }) => {
   const [visible, setVisible] = useState(false);
   const toggleVisibility = () => setVisible((prev) => !prev);
@@ -93,7 +93,7 @@ const MainInput = ({
   onBlur,
   onInput,
   onChange,
-  value
+  value,
 }) => {
   return (
     <>
@@ -210,7 +210,7 @@ const RupiahInput = ({
   isDisabled = false,
   onBlur,
   onInput,
-  autofocus = false
+  autofocus = false,
 }) => {
   const [displayValue, setDisplayValue] = useState("");
 
@@ -267,7 +267,7 @@ const PhoneNumberInput = ({
   isDisabled = false,
   value = "", // from Controller
   onChange, // from Controller
-  onBlur // optional from Controller
+  onBlur, // optional from Controller
 }) => {
   const [displayValue, setDisplayValue] = useState("");
 
@@ -343,7 +343,7 @@ const DropDownInput = ({
   isDisabled = false,
   options = [],
   onChange,
-  onFocus
+  onFocus,
 }) => {
   return (
     <div className="form-control flex flex-col gap-1 w-full">
@@ -367,12 +367,23 @@ const DropDownInput = ({
               onChange?.({ target: { name, value: selectedOption?.value } });
               if (hook_form?.onChange) {
                 hook_form.onChange({
-                  target: { value: selectedOption?.value }
+                  target: { value: selectedOption?.value },
                 });
               }
             }}
             classNamePrefix="react-select"
             isSearchable
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                border: "none",
+                boxShadow: "none",
+                backgroundColor: "transparent",
+              }),
+              indicatorSeparator: () => ({
+                display: "none",
+              }),
+            }}
           />
         </div>
       </FieldInput>
@@ -390,7 +401,7 @@ const CountrySearchSelectInput = ({
   text = "Negara",
   hook_form,
   isDisabled = false,
-  onchange
+  onchange,
 }) => {
   const [options, setOptions] = useState([]);
 
@@ -398,7 +409,7 @@ const CountrySearchSelectInput = ({
     const countryObj = countries.getNames("id", { select: "official" });
     const countryArr = Object.entries(countryObj).map(([code, name]) => ({
       value: name,
-      label: `${name} (${code})`
+      label: `${name} (${code})`,
     }));
     setOptions(countryArr);
   }, []);
@@ -424,7 +435,7 @@ const CountrySearchSelectInput = ({
               onchange?.({ target: { name, value: selectedOption?.value } });
               if (hook_form?.onChange) {
                 hook_form.onChange({
-                  target: { value: selectedOption?.value }
+                  target: { value: selectedOption?.value },
                 });
               }
             }}
@@ -464,5 +475,5 @@ export {
   CountrySearchSelectInput,
   RupiahInput,
   DropDownInput,
-  SearchInput
+  SearchInput,
 };
