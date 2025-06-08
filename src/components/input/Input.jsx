@@ -19,7 +19,7 @@ const FieldInput = ({
 }) => {
   return (
     <div
-      className={`${variant} ${
+      className={`${variant}  ${
         isDisabled ? "bg-[#f0f0f0]" : "bg-white"
       } flex flex-row items-center rounded-full w-full outline outline-1 outline-[#D0D5DD] ${
         isError
