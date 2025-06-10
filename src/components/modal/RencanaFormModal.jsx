@@ -1,6 +1,6 @@
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "../button/Button";
-import { Icon } from "../icons/icons";
+import { Icon } from "../icons/Icons";
 import { DropDownInput, MainInput, RupiahInput } from "../input/Input";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
