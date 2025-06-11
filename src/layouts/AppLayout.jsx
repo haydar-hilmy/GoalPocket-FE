@@ -26,7 +26,7 @@ const AppLayout = ({
 
       <Navbar page={page} user={{ username: userData.name }} />
 
-      <main className="px-5 pt-0 pb-5 w-full">
+      <main className="px-2 md:px-5 pt-0 pb-5 w-full">
         <div className="mb-1">
           <HeaderApp username={userData.name} pageName={page} />
           {subtitle && (
