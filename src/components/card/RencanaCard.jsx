@@ -78,7 +78,7 @@ export const RencanaCard = ({ data, onEdit, onComplete }) => {
         />
       </div>
       <Line />
-      <ActionButton onClick={onEdit} isDisabled={isCompleted}>
+      <ActionButton onClick={onEdit}>
         <BorderColorOutlined fontSize="inherit" /> Ubah
       </ActionButton>
       <ActionButton
