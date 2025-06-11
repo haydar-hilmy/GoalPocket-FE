@@ -1,7 +1,7 @@
 import {
   AdsClickOutlined,
   BorderColorOutlined,
-  DateRangeOutlined,
+  CheckOutlined,
   HourglassBottomOutlined,
   SavingsOutlined,
   TrendingDownOutlined,
@@ -12,7 +12,11 @@ import { ActionButton } from "../button/ActionButton";
 import { formatRupiah } from "../../utils/FormatRupiah";
 
 export const RencanaCardContainer = ({ children }) => {
-  return <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">{children}</div>;
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
+      {children}
+    </div>
+  );
 };
 
 const Item = ({ icon, label = "Label", value = "Value" }) => {
@@ -27,9 +31,23 @@ const Item = ({ icon, label = "Label", value = "Value" }) => {
   );
 };
 
-export const RencanaCard = ({ data, onEdit }) => {
+export const RencanaCard = ({ data, onEdit, onComplete }) => {
+  const isCompleted = data?.isCompleted;
+
   return (
-    <div className="bg-white min-w-60 w-auto px-6 py-4 rounded-lg shadow-md flex flex-col gap-3 justify-between">
+    <div
+      className={`relative bg-white min-w-60 w-auto px-6 py-4 rounded-lg shadow-md flex flex-col gap-3 justify-between transition-all ${
+        isCompleted ? "opacity-60 backdrop-blur-sm border border-green-400" : ""
+      }`}
+    >
+      {/* Badge indikator selesai */}
+      {isCompleted && (
+        <div className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm flex items-center gap-1 animate-fadeIn">
+          <CheckOutlined fontSize="small" />
+          Selesai
+        </div>
+      )}
+
       <h2 className="font-bold text-xl">{data.name}</h2>
       <Line />
       <div className="flex flex-col gap-4">
@@ -60,8 +78,15 @@ export const RencanaCard = ({ data, onEdit }) => {
         />
       </div>
       <Line />
-      <ActionButton onClick={onEdit}>
+      <ActionButton onClick={onEdit} isDisabled={isCompleted}>
         <BorderColorOutlined fontSize="inherit" /> Ubah
+      </ActionButton>
+      <ActionButton
+        variant={`bg-green-400 ${isCompleted ? "cursor-not-allowed opacity-50" : ""}`}
+        isDisabled={isCompleted}
+        onClick={onComplete}
+      >
+        <CheckOutlined fontSize="inherit" /> Selesaikan
       </ActionButton>
     </div>
   );

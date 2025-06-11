@@ -116,8 +116,6 @@ const AddTranscationPage = () => {
 
       let result = await PostTracking(dataTracking);
 
-      console.log("Result PostTracking: ", result)
-
       Swal.fire({
         icon: "success",
         title: "Transaksi Tersimpan",

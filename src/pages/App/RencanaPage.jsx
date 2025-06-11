@@ -10,8 +10,9 @@ import {
 } from "../../components/card/RencanaCard";
 import { CONFIG } from "../../config/Config";
 import Swal from "sweetalert2";
-import { GetAllTargets } from "../../data/Api";
+import { GetAllTargets, GetUserProfile } from "../../data/Api";
 import RencanaCardEmptyState from "../../components/alertBox/RencanaCardEmpty";
+import { toast } from "react-toastify";
 
 const RencanaPage = () => {
   const [isOpenFormModal, setIsOpenFormModal] = useState(false);
@@ -37,6 +38,56 @@ const RencanaPage = () => {
     setIsOpenFormModal(true);
   };
 
+  const handleComplete = async (item) => {
+    const confirmation = await Swal.fire({
+      title: `Selesaikan Target?`,
+      html: `Apakah kamu yakin ingin menandai <strong>"${item.name}"</strong> sebagai selesai?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Selesaikan",
+      cancelButtonText: "Batal",
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+      const token = localStorage.getItem(CONFIG.LS_KEY);
+      if (!token) {
+        throw new Error("Token tidak ditemukan. Silakan login ulang.");
+      }
+
+      const response = await fetch(
+        `${CONFIG.BASE_URL}/targets/${item.id}/complete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Gagal menyelesaikan target.");
+      }
+
+      toast.success(`🎉 Target "${item.name}" telah diselesaikan!`);
+      localStorage.removeItem(CONFIG.TARGETS_DATA);
+      fetchTargets();
+    } catch (error) {
+      console.error("Error saat menyelesaikan target:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Menyelesaikan Target",
+        text: error.message || "Terjadi kesalahan saat menyelesaikan target.",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
   const fetchTargets = async () => {
     try {
       setLoading(true);
@@ -60,9 +111,48 @@ const RencanaPage = () => {
       setLoading(false);
     }
   };
+
+  const checkTargetIsComplete = async () => {
+    try {
+      const summary = await GetUserProfile();
+      const currentSaving = summary?.currentSaving ?? 0;
+
+      // Filter target yang sudah tercapai
+      const completedTargets = rencanaList.filter(
+        (r) => !r.isCompleted && currentSaving >= r.targetAmount
+      );
+
+      if (completedTargets.length > 0) {
+        const title =
+          completedTargets.length === 1
+            ? `🎯 Target "${
+                completedTargets[0].title || completedTargets[0].name
+              }" bisa diselesaikan!`
+            : `🎯 ${completedTargets.length} target bisa diselesaikan!`;
+
+        const body = completedTargets
+          .slice(0, 3)
+          .map((r) => `• ${r.title || r.name || r.nama}`)
+          .join("\n");
+
+        toast.success(`${title}\n${body}`, {
+          duration: 7000,
+        });
+      }
+    } catch (error) {
+      console.error("Error while [Check Target Is Complete]: ", error);
+    }
+  };
+
   useEffect(() => {
     fetchTargets();
   }, []);
+
+  useEffect(() => {
+    if (rencanaList.length > 0) {
+      checkTargetIsComplete();
+    }
+  }, [rencanaList]);
 
   return (
     <AppLayout
@@ -91,7 +181,7 @@ const RencanaPage = () => {
         </RencanaCardContainer>
       ) : rencanaList.length === 0 ? (
         <div className="py-10">
-        <RencanaCardEmptyState />
+          <RencanaCardEmptyState />
         </div>
       ) : (
         <RencanaCardContainer>
@@ -100,6 +190,7 @@ const RencanaPage = () => {
               key={index}
               data={item}
               onEdit={() => handleEdit(item)}
+              onComplete={() => handleComplete(item)}
             />
           ))}
         </RencanaCardContainer>
