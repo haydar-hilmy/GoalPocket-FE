@@ -5,5 +5,6 @@ export const CONFIG = {
   EDIT_RENCANA: "GP_EDIT_RENCANA",
   TARGETS_DATA: "GP_TARGETS",
   BACKEND_ENDPOINT: "localhost:3000",
-  BASE_URL: "https://back-end-production-45f3.up.railway.app/api"
+  BASE_URL: "https://back-end-production-45f3.up.railway.app/api",
+  ML_BASE_URL: "https://ml-api-production-6fd5.up.railway.app",
 };

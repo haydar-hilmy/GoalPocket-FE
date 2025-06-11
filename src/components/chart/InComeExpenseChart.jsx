@@ -72,7 +72,7 @@ const IncomeExpenseChart = ({ token }) => {
           <p className="font-bold">{label}</p>
           {notes?.map((item, idx) => (
             <div key={idx}>
-              <span className="font-medium">{item.type}: </span> {item.amount} -{" "}
+              <span className="font-medium">{item.type == "expense" ? "Pengeluaran" : item.type == "income" ? "Pemasukan" : ""}: </span> {item.amount} -{" "}
               {item.notes}
             </div>
           ))}
@@ -86,9 +86,9 @@ const IncomeExpenseChart = ({ token }) => {
     <div className="w-full overflow-x-auto">
       <div className="min-w-[800px]">
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData}>
+          <LineChart data={chartData} margin={{ left: 30 }}>
             <XAxis dataKey="date" />
-            <YAxis />
+            <YAxis tick={{ angle: -45 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line

@@ -8,34 +8,66 @@ import { formatRupiah } from "../../utils/FormatRupiah";
 import { CONFIG } from "../../config/Config";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
-import { PredictedBalanceBox, PredictedBalanceBoxLoading } from "../../components/box/PredictBalanceBox";
+import {
+  PredictedBalanceBox,
+  PredictedBalanceBoxLoading,
+} from "../../components/box/PredictBalanceBox";
+import { getDailyIncomeExpenses } from "../../utils/GetDailyIncomeExpenses";
+import dayjs from "dayjs";
+import { FetchPredictAPI } from "../../data/FetchPredict";
 
 const DashboardPage = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [predictResult, setPredictResult] = useState([]);
 
   const token = localStorage.getItem(CONFIG.LS_KEY);
 
-  const fetchSummary = async () => {
+  const fetchPredict = async () => {
+    setLoading(true);
+    let errorMessage = "Gagal mengambil hasil prediksi";
     try {
-      setLoading(true);
-
-      const res = await fetch(`${CONFIG.BASE_URL}/user/summary`, {
+      // FETCH PERTAMA - SUMMARY
+      const responSummary = await fetch(`${CONFIG.BASE_URL}/user/summary`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!res.ok) throw new Error("Failed to fetch dashboard summary");
+      if (!responSummary.ok) {
+        errorMessage = "Gagal mengambil data ringkasan dashboard";
+        throw new Error(errorMessage);
+      }
 
-      const result = await res.json();
-      setSummary(result);
+      const resultSummary = await responSummary.json();
+      setSummary(resultSummary);
+
+      // FETCH KEDUA - PREDICT
+      const resultFetchPredict = await FetchPredictAPI(resultSummary);
+      if (!Array.isArray(resultFetchPredict.prediction)) {
+        // Jika backend tidak mengembalikan nilai prediksi, handle manual
+        setPredictResult([
+          "Rp 0",
+          "Rp 0",
+          "Rp 0",
+          "Rp 0",
+          "Rp 0",
+          "Rp 0",
+          "Rp 0",
+        ]);
+        // errorMessage = "Gagal menampilkan hasil prediksi";
+        // throw new Error(errorMessage);
+      } else {
+
+         // Jika berhasil
+        setPredictResult(resultFetchPredict.prediction);
+      }
     } catch (err) {
       Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: err.message || "Gagal mengambil data summary",
+        text: err.message || errorMessage,
       });
     } finally {
       setLoading(false);
@@ -43,13 +75,17 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-    fetchSummary();
+    fetchPredict();
   }, []);
 
   return (
     <AppLayout title="Dashboard App" page="dashboard">
       <div className="w-full px-4 md:px-10 py-6">
-        {loading ? <PredictedBalanceBoxLoading /> : <PredictedBalanceBox balance={0} />}
+        {loading ? (
+          <PredictedBalanceBoxLoading />
+        ) : (
+          <PredictedBalanceBox predictions={predictResult} />
+        )}
 
         <div className="flex flex-wrap gap-6 justify-center">
           {loading ? (

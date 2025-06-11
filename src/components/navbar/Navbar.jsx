@@ -73,7 +73,7 @@ const Navbar = ({ page = "home", user }) => {
               <DateRangeOutlined color="currentColor" />
             </NavLink>
             <NavLink
-              text="Pemasukan"
+              text="Transaksi"
               hrefTo={"/add"}
               isActive={page == "Catat Transaksi"}
             >

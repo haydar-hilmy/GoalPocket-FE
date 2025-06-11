@@ -35,25 +35,38 @@ const HistoryPage = () => {
     fetchData();
   }, [token]);
 
+  const handleDeleteIncome = (deletedId) => {
+    setIncomes((prevData) => prevData.filter((item) => item.id !== deletedId));
+  };
+  const handleDeleteExpenses = (deletedId) => {
+    setExpenses((prevData) => prevData.filter((item) => item.id !== deletedId));
+  };
+
   return (
     <AppLayout
       title="history"
       page="Riwayat Transaksi"
       subtitle="Riwayat Pemasukan dan Pengeluaran Anda"
     >
-      <div className="p-4 max-w-6xl bg-[#F5F5FC] rounded-xl mx-auto">
+      <div className="p-2 max-w-6xl bg-[#F5F5FC] rounded-xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">
           Histori Pemasukan & Pengeluaran
         </h1>
         {loading ? (
           <IncomeHistoryTableLoading />
         ) : (
-          <IncomeHistoryTable data={income} />
+          <IncomeHistoryTable
+            data={income}
+            onDeleteSuccess={handleDeleteIncome}
+          />
         )}
         {loading ? (
           <ExpenseHistoryTableLoading />
         ) : (
-          <ExpenseHistoryTable data={expense} />
+          <ExpenseHistoryTable
+            data={expense}
+            onDeleteSuccess={handleDeleteExpenses}
+          />
         )}
       </div>
     </AppLayout>
