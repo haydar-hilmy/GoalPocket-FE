@@ -6,5 +6,5 @@ export const CONFIG = {
   TARGETS_DATA: "GP_TARGETS",
   BACKEND_ENDPOINT: "localhost:3000",
   BASE_URL: "https://back-end-production-7fa1.up.railway.app/api",
-  ML_BASE_URL: "https://web-production-680b.up.railway.appy",
+  ML_BASE_URL: "https://web-production-680b.up.railway.app",
 };
